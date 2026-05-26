@@ -4,22 +4,22 @@ export const theme: ThemeUserConfig = {
   // [Basic]
 
   /** Will be used in index page & copyright declaration */
-  author: '苏打饼',
+  author: 'cxd',
   /** Title for your website. Will be used in metadata and as browser tab title. */
-  title: '苏打饼的bolg',
+  title: '雪泥工坊',
   /** Description metadata for your website. Can be used in page metadata. */
-  description: '写点有趣的东西。',
+  description: '写点有趣的东西，记录技术折腾、个人成长和那些慢慢做成的小项目。',
 
   /** The default favicon for your site which should be a path to an image in the `public/` directory. */
-  favicon: '/favicon/favicon.ico',
+  favicon: '/favicon/favicon.svg',
   /** The default social card image for your site which should be a path to an image in the `public/` directory. */
   socialCard: '/images/social-card.png',
   /** Specify the default language for this site. */
   locale: {
-    lang: 'en-US',
-    attrs: 'en_US',
+    lang: 'zh-CN',
+    attrs: 'zh_CN',
     // Date locale
-    dateLocale: 'en-US',
+    dateLocale: 'zh-CN',
     dateOptions: {
       day: 'numeric',
       month: 'short',
@@ -28,8 +28,8 @@ export const theme: ThemeUserConfig = {
   },
   /** Set a logo image to show in the homepage. */
   logo: {
-    src: '/src/assets/avatar.png',
-    alt: 'Avatar'
+    src: '/src/assets/logo.png',
+    alt: '雪泥工坊 logo'
   },
 
   titleDelimiter: '•',
@@ -53,7 +53,6 @@ export const theme: ThemeUserConfig = {
       { title: 'Blog', link: '/blog' },
       // { title: 'Docs', link: '/docs' },
       { title: 'Projects', link: '/projects' },
-      { title: 'Links', link: '/links' },
       { title: 'About', link: '/about' }
     ]
   },
@@ -78,9 +77,9 @@ export const theme: ThemeUserConfig = {
       }
     ],
     /** Enable displaying a “Astro & Pure theme powered” link in your site’s footer. */
-    credits: true,
+    credits: false,
     /** Optional details about the social media accounts for this site. */
-    social: { github: 'https://github.com/cworld1/astro-theme-pure' }
+    social: { github: 'https://github.com/cxdpowered' }
   },
 
   // [Content]
@@ -95,7 +94,7 @@ export const theme: ThemeUserConfig = {
     blogPageSize: 8,
     /** Share buttons to show */
     // Currently support weibo, x, bluesky
-    share: ['weibo', 'x', 'bluesky'],
+    share: ['weibo', 'x', 'bluesky']
     /** Enable image captions (default false) */
     // imageCaption: true
   }
@@ -106,19 +105,13 @@ export const integ: IntegrationUserConfig = {
   // https://astro-pure.js.org/docs/integrations/links
   links: {
     // Friend logbook
-    logbook: [
-      { date: '2025-03-16', content: 'Is there a leakage?' },
-      { date: '2025-03-16', content: 'A leakage of what?' },
-      { date: '2025-03-16', content: 'I have a full seat of water, like, full of water!' },
-      { date: '2025-03-16', content: 'Must be the water.' },
-      { date: '2025-03-16', content: "Let's add that to the words of wisdom." }
-    ],
+    logbook: [],
     // Yourself link info
     applyTip: [
-      { name: 'Name', val: theme.title },
+      { name: 'Name', val: theme.author },
       { name: 'Desc', val: theme.description || 'Null' },
-      { name: 'Link', val: 'https://astro-pure.js.org/' },
-      { name: 'Avatar', val: 'https://astro-pure.js.org/favicon/favicon.ico' }
+      { name: 'Link', val: 'https://blog-iota-three.vercel.app/' },
+      { name: 'Avatar', val: 'https://blog-iota-three.vercel.app/favicon/favicon.svg' }
     ],
     // Cache avatars in `public/avatars/` to improve user experience.
     cacheAvatar: false

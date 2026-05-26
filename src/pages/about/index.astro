@@ -1,250 +1,138 @@
 ---
-import { Button, Collapse, Spoiler, Timeline } from 'astro-pure/user'
+import { Button, Card, Timeline } from 'astro-pure/user'
 import PageLayout from '@/layouts/CommonPage.astro'
-import Substats from '@/components/about/Substats.astro'
-import ToolSection from '@/components/about/ToolSection.astro'
 
 const headings = [
-  { depth: 2, slug: 'hobbies', text: 'Hobbies' },
-  { depth: 2, slug: 'tools', text: 'Tools' },
-  { depth: 2, slug: 'social-networks', text: 'Social Networks' },
-  { depth: 2, slug: 'gossips', text: 'Gossips' },
-  { depth: 2, slug: 'about-blog', text: 'About Blog' }
+  { depth: 2, slug: 'profile', text: 'Profile' },
+  { depth: 2, slug: 'direction', text: 'Direction' },
+  { depth: 2, slug: 'personal-knowledge-publishing-agent', text: 'Main Project' },
+  { depth: 2, slug: 'research', text: 'Research' },
+  { depth: 2, slug: 'experience', text: 'Experience' },
+  { depth: 2, slug: 'blog', text: 'Blog' },
+  { depth: 2, slug: 'contact', text: 'Contact' }
 ]
 ---
 
-<PageLayout title='About' {headings} comment>
-  <p>Developer / Designer</p>
+<PageLayout title='About' {headings}>
   <p>
-    Lorem ipsum dolor sit amet, vidit suscipit at mei. Quem denique mea id. Usu ei regione indoctum
-    dissentiunt, cu meliore fuisset mei, vel quod voluptua ne. Ex dicat impedit mel, at eum oratio
-    possit voluptatum.
+    这个博客不是为了把自己包装得很厉害。它更像一个持续更新的工作台：记录我怎么学习、怎么踩坑、怎么把一个想法慢慢做成东西。
+    如果这些记录顺便能让别人看出我会写代码、会思考、会把事情推进，那就算额外收益。
   </p>
+
+  <div class='not-prose mb-8 flex flex-wrap gap-3'>
+    <Button title='GitHub' href='https://github.com/cxdpowered' target='_blank' variant='ahead' />
+    <Button title='Projects' href='/projects' variant='ahead' />
+    <Button title='Email' href='mailto:1293909048@qq.com' variant='ahead' />
+  </div>
+
+  <h2 id='profile'>Profile</h2>
   <p>
-    Motto: Stay hungry, Stay foolish. <Spoiler>这里可以夹私货，比如为什么要演奏春日影！</Spoiler>
+    我的背景不是单一路线：本科是物流工程，毕业后在拼多多多多买菜湖北配送团队做过一线业务执行；后来跨专业考研进入计算机方向，现在研究方向是弱监督文本驱动行人检索。
   </p>
-  <Button title='Sponsor Me' class='w-fit' href='/projects#sponsorship' variant='ahead' />
 
-  {/* general-talk */}
-  <h2 id='hobbies'>Hobbies</h2>
-  <ul>
-    <li>Lorem ipsum dolor sit amet, vidit suscipit at mei.</li>
-    <li>
-      Quem denique mea id. Usu ei regione indoctum dissentiunt, cu meliore fuisset mei, vel quod
-      voluptua ne.
-    </li>
-    <li>Ex dicat impedit mel, at eum oratio possit voluptatum.</li>
-    <li>Impetus fuisset ullamcorper pri cu, his posse iisque ad, aliquam honestatis usu id.</li>
-  </ul>
+  <h2 id='direction'>Direction</h2>
+  <div class='not-prose grid grid-cols-1 gap-3 sm:grid-cols-2'>
+    <Card
+      heading='AI 应用和个人工作流'
+      subheading='Agent Workflow、Tool Use、RAG、MCP、Dify 二次开发'
+    >
+      <p class='text-muted-foreground'>
+        我对“模型怎么变成日常可用的工具”比较感兴趣，尤其是从用户输入、结构化抽取、长期记忆、工具调用到发布部署的完整链路。
+      </p>
+    </Card>
+    <Card heading='多模态和工程化' subheading='PyTorch、多模态检索、分布式训练、模型服务化'>
+      <p class='text-muted-foreground'>
+        研究经历让我经常和
+        embedding、向量检索、模型训练、评估指标、部署环境打交道。很多文章会从这些具体问题展开。
+      </p>
+    </Card>
+  </div>
 
-  {/* tools */}
-  <h2 id='tools'>Tools</h2>
-  <p>Current support tools as follow:</p>
-  <ToolSection
-    class='mb-5'
-    title='Design'
-    tools={[
-      {
-        name: 'Photoshop',
-        description: 'Picture Editing',
-        href: 'https://www.adobe.com/products/photoshop',
-        icon: import('@/assets/tools/photoshop.svg?raw')
-      },
-      {
-        name: 'Illustrator',
-        description: 'Vector Drawing',
-        href: 'https://www.adobe.com/products/illustrator',
-        icon: import('@/assets/tools/illustrator.svg?raw')
-      },
-      {
-        name: 'After Effects',
-        description: 'Motion Graphics',
-        href: 'https://www.adobe.com/products/aftereffects',
-        icon: import('@/assets/tools/aftereffects.svg?raw')
-      },
-      {
-        name: 'Premiere Pro',
-        description: 'Video Editing',
-        href: 'https://www.adobe.com/products/premiere',
-        icon: import('@/assets/tools/premiere.svg?raw')
-      }
-    ]}
-  />
-  <ToolSection
-    class='mb-5'
-    title='Productivity'
-    tools={[
-      {
-        name: 'Chrome',
-        description: 'Browser',
-        href: 'https://www.google.com/chrome/',
-        icon: import('@/assets/tools/chrome.svg?raw')
-      },
-      {
-        name: 'Firefox',
-        description: 'Browser',
-        href: 'https://www.mozilla.org/en-US/firefox',
-        icon: import('@/assets/tools/firefox.svg?raw')
-      },
-      {
-        name: 'Notion',
-        description: 'Note Taking',
-        href: 'https://www.notion.so/',
-        icon: import('@/assets/tools/notion.svg?raw')
-      },
-      {
-        name: 'Typora',
-        description: 'Markdown Editor',
-        href: 'https://typora.io/',
-        icon: import('@/assets/tools/typora.svg?raw')
-      }
-    ]}
-  />
-  <ToolSection
-    class='mb-5'
-    title='Development'
-    tools={[
-      {
-        name: 'VS Code',
-        description: 'IDE',
-        href: 'https://code.visualstudio.com/',
-        icon: import('@/assets/tools/vscode.svg?raw')
-      },
-      {
-        name: 'Neovim',
-        description: 'IDE',
-        href: 'https://neovim.io/',
-        icon: import('@/assets/tools/neovim.svg?raw')
-      },
-      {
-        name: 'Sublime Text',
-        description: 'IDE',
-        href: 'https://www.sublimetext.com/',
-        icon: import('@/assets/tools/sublime.svg?raw')
-      }
-    ]}
-  />
-  <ToolSection
-    class='mb-5'
-    title='Environment'
-    tools={[
-      {
-        name: 'Arch Linux',
-        description: 'Linux Distribution',
-        href: 'https://archlinux.org/',
-        icon: import('@/assets/tools/archlinux.svg?raw')
-      },
-      {
-        name: 'Ubuntu 24.04 LTS',
-        description: 'Linux Distribution',
-        href: 'https://ubuntu.com/',
-        icon: import('@/assets/tools/ubuntu.svg?raw')
-      },
-      {
-        name: 'MacOS Tahoe',
-        description: 'MacBook Air',
-        href: 'https://www.apple.com/macos/',
-        icon: import('@/assets/tools/apple.svg?raw')
-      },
-      {
-        name: 'Windows 11',
-        description: 'Framework Laptop 16',
-        href: 'https://news.microsoft.com/windows11-general-availability/',
-        icon: import('@/assets/tools/windows11.svg?raw')
-      }
-    ]}
-  />
-
-  {/* social-networks */}
-  <h2 id='social-networks'>Social Networks</h2>
+  <h2 id='personal-knowledge-publishing-agent'>Personal Knowledge Publishing Agent</h2>
   <p>
-    Lorem ipsum dolor sit amet, vidit suscipit at mei. Quem denique mea id. Usu ei regione indoctum
-    dissentiunt, cu meliore fuisset mei, vel quod voluptua ne.
+    最近最想做成的东西是一个基于 Dify 二次开发的个人知识沉淀与技术内容发布
+    Agent。它不是普通聊天机器人，也不是简单套壳博客生成器，而是想把“随手记下来的碎片”慢慢变成能检索、能回看、能写成文章的长期材料。
   </p>
-  <Substats
-    stats={[
-      {
-        platform: 'GitHub',
-        icon: 'github',
-        link: 'https://github.com/cworld1',
-        text: 'followers',
-        api: 'github/cworld1'
-      },
-      {
-        platform: 'Telegram',
-        icon: 'telegram',
-        color: '#2ca5e0',
-        link: 'https://t.me/cworld0_cn',
-        text: 'subscribers',
-        api: 'telegram/cworld0_cn'
-      },
-      {
-        platform: 'Steam',
-        icon: 'steam',
-        color: '#50769d',
-        link: 'https://steamcommunity.com/id/cworld',
-        text: 'games',
-        api: 'steamgames/76561199021278120'
-      }
-    ]}
-  />
+  <Card
+    heading='核心链路'
+    subheading='碎片输入结构化 -> 长期记忆 / RAG -> 博客草稿生成 -> MCP 发布工具链'
+  >
+    <ul class='ms-4 list-disc text-muted-foreground'>
+      <li>
+        用 FastAPI 封装结构化记录服务，定义 learning_note、project_update、interview_material
+        等记录类型。
+      </li>
+      <li>
+        通过 Dify Knowledge Base 做语义检索与 metadata filter，沉淀学习记录、项目决策和写作素材。
+      </li>
+      <li>
+        把草稿写入、frontmatter 校验、SEO 补全、死链检查、git push、Vercel 部署轮询封装为发布工具。
+      </li>
+      <li>
+        用 dry-run、人工确认和执行日志降低真实仓库误操作风险，并用分类准确率、RAG
+        召回命中率、草稿可用率做评估。
+      </li>
+    </ul>
+  </Card>
 
-  {/* gossips */}
-  <h2 id='gossips'>Gossips</h2>
-  <Collapse title='Lorem ipsum'>
-    Lorem ipsum dolor sit amet, vidit suscipit at mei. Quem denique mea id. Usu ei regione indoctum
-    dissentiunt, cu meliore fuisset mei, vel quod voluptua ne. Ex dicat impedit mel, at eum oratio
-    possit voluptatum.
-  </Collapse>
+  <h2 id='research'>Research</h2>
+  <Card
+    heading='弱监督文本-图像行人检索'
+    subheading='硕士研究课题，一作 IEEE TMM（CCF A）在审论文工作'
+  >
+    <ul class='ms-4 list-disc text-muted-foreground'>
+      <li>基于 ALBEF 视觉-语言预训练框架做跨模态检索研究。</li>
+      <li>引入伪标签可靠性建模与边界样本校准机制，缓解弱监督噪声标签带来的对齐问题。</li>
+      <li>
+        在 CUHK-PEDES、ICFG-PEDES、RSTPReid 等公开数据集完成实验，负责 PyTorch pipeline、DDP
+        训练、日志归档和结果分析。
+      </li>
+    </ul>
+  </Card>
+  <Card
+    heading='研究生数学建模大赛'
+    subheading='围岩裂隙精准识别与三维模型重构，队长，国家级二等奖'
+  >
+    <p class='text-muted-foreground'>
+      主导图像预处理、裂隙检测 /
+      分割、三维重建、参数量化、误差分析和论文撰写，训练了把开放问题拆成可验证工程步骤的能力。
+    </p>
+  </Card>
 
-  {/* about-blog */}
-  <h2 id='about-blog'>About Blog</h2>
-  <p>Website history:</p>
+  <h2 id='experience'>Experience</h2>
   <Timeline
     events={[
       {
-        date: '2024-04-29',
+        date: '2026.05',
         content:
-          'Website refactored using <a href="https://astro.build/" target="_blank">Astro</a> and <a href="https://github.com/srleom/astro-theme-resume" target="_blank">Astro Theme Resume</a>'
+          '跑通 Dify 1.14.2 本地 Docker Compose、FastAPI Custom Tool 和 Personal Knowledge Publishing Agent 的 dry-run smoke test。'
       },
       {
-        date: '2024-07-26',
-        content:
-          'Website abstracted as a theme and published on <a href="https://github.com/cworld1/astro-theme-pure"target="_blank">Github</a>'
+        date: '2026.03',
+        content: '参加 WPS 菁英工程师培养计划 C++ / Qt 方向，完成 8 周桌面应用工程化训练并结业。'
       },
       {
-        date: '2024-07-27',
-        content: 'Began writing website docs'
+        date: '2024.09',
+        content: '进入华中师范大学计算机学院，研究方向为视觉-文本跨模态检索。'
+      },
+      {
+        date: '2021',
+        content:
+          '本科毕业后在拼多多多多买菜湖北配送团队做区域配送业务执行，积累高节奏协作和问题闭环经验。'
       }
     ]}
   />
+
+  <h2 id='blog'>Blog</h2>
   <p>
-    The smooth operation and personalized customization of website also rely on the resources and
-    technical support provided by the following excellent projects/service providers:
+    博客会优先写我真正折腾过的内容：Dify / Agent Workflow、RAG 评估、MCP 工具链、FastAPI
+    服务封装、Astro 发布工作流、多模态检索实验复盘，以及 AI 编程工具在真实项目里的使用边界。
   </p>
-  <ul>
-    <li>Domain: <a href='#' target='_blank'>Vercel</a></li>
-    <li>
-      Framework & Theme: <a href='https://astro.build/' target='_blank'>Astro</a> + <a
-        href='https://github.com/cworld1/astro-theme-pure'
-        target='_blank'>Astro Theme Pure</a
-      >
-    </li>
-    <li>
-      Site hosting: <a href='https://vercel.com/' target='_blank'>Vercel</a>
-    </li>
-    <li>
-      CI/CD: <a href='https://vercel.com/workflow' target='_blank'>Vercel Workflow</a>
-    </li>
-    <li>Comment system: <a href='https://waline.js.org' target='_blank'>Waline</a></li>
-    <li>
-      Visits: <a href='https://supabase.com/' target='_blank'>Supabase</a> +
-      <a href='https://waline.js.org/' target='_blank'>Waline</a>
-    </li>
-    <li>
-      Other statistics: <a href='https://github.com/spencerwooo/substats' target='_blank'
-        >Substats</a
-      >
-    </li>
-  </ul>
+  <p>我希望这里不是冷冰冰的作品列表，而是一个能持续留下思考、代码、失败和迭代痕迹的地方。</p>
+
+  <h2 id='contact'>Contact</h2>
+  <p>
+    邮箱：<a href='mailto:1293909048@qq.com'>1293909048@qq.com</a><br />
+    GitHub：<a href='https://github.com/cxdpowered' target='_blank'>github.com/cxdpowered</a>
+  </p>
 </PageLayout>

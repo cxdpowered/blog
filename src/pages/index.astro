@@ -1,19 +1,32 @@
 ---
 import { Image } from 'astro:assets'
 
-import { Quote } from 'astro-pure/advanced'
 import { PostPreview } from 'astro-pure/components/pages'
 import { getBlogCollection, sortMDByDate } from 'astro-pure/server'
 import { Button, Card, Icon, Label } from 'astro-pure/user'
 import PageLayout from '@/layouts/BaseLayout.astro'
-import ProjectCard from '@/components/home/ProjectCard.astro'
 import Section from '@/components/home/Section.astro'
 import SkillLayout from '@/components/home/SkillLayout.astro'
 import config from '@/site-config'
 
-const languages = ['Html', 'JavaScript', 'CSS', 'Shell']
-const frontend = ['TypeScript', 'Vite', 'Webpack', 'Astro']
-const backend = ['Vercel', 'Waline']
+const skillGroups = [
+  {
+    title: 'LLM / Agent',
+    skills: ['Dify', 'Workflow', 'MCP', 'RAG', 'Prompt Engineering', 'Langfuse']
+  },
+  {
+    title: 'Modeling',
+    skills: ['PyTorch', 'Transformers', 'ALBEF', 'CLIP', 'DDP', 'LoRA']
+  },
+  {
+    title: 'Engineering',
+    skills: ['Python', 'FastAPI', 'Docker Compose', 'Linux', 'Shell', 'Git']
+  },
+  {
+    title: 'Web',
+    skills: ['Astro', 'TypeScript', 'Vercel', 'Markdown']
+  }
+]
 
 const MAX_POSTS = 10
 const allPosts = await getBlogCollection()
@@ -31,58 +44,133 @@ if (!images[imagePath])
 
 <PageLayout meta={{ title: 'Home' }} highlightColor='#659EB9'>
   <main class='flex w-full flex-col items-center'>
-    <section class='animate mb-10 flex flex-col items-center gap-y-7' id='content-header'>
+    <section
+      class='animate mb-10 flex flex-col items-center gap-y-7 text-center'
+      id='content-header'
+    >
       <Image
         src={images[imagePath]()}
         alt={config.logo.alt || 'Profile'}
-        class='h-28 w-auto rounded-full border p-1'
+        class='h-28 w-28 rounded-3xl border p-1 shadow-sm'
         loading='eager'
         fetchpriority='high'
       />
 
       <div class='flex flex-col items-center gap-y-4'>
-        <h1 class='text-3xl font-medium'>{config.author}</h1>
+        <div class='flex flex-col items-center gap-y-2'>
+          <p
+            class='rounded-full border bg-muted px-3 py-1 text-sm font-medium text-muted-foreground'
+          >
+            写点有趣的东西
+          </p>
+          <h1 class='text-3xl font-medium sm:text-4xl'>{config.title}</h1>
+          <p class='max-w-2xl text-muted-foreground'>
+            这里会放技术折腾、成长记录和一些还没想明白但值得写下来的问题。最近主要在玩 LLM / Agent /
+            RAG，也会记录多模态检索、Linux、Astro 博客和 AI 工具链里的坑。
+          </p>
+        </div>
         <div class='flex flex-wrap justify-center gap-x-7 gap-y-3'>
-          <Label title='Somewhere'>
+          <Label title='武汉'>
             <Icon name='location' class='size-5' slot='icon' />
           </Label>
-          <Label
-            title='Source code'
-            as='a'
-            href='https://github.com/cworld1/astro-theme-pure'
-            target='_blank'
-          >
+          <Label title='cxdpowered' as='a' href='https://github.com/cxdpowered' target='_blank'>
             <Icon name='github' class='size-5' slot='icon' />
+          </Label>
+          <Label title='1293909048@qq.com' as='a' href='mailto:1293909048@qq.com'>
+            <Icon name='email' class='size-5' slot='icon' />
           </Label>
         </div>
       </div>
 
-      {/* Get template */}
-      <a
-        href='https://github.com/cworld1/astro-theme-pure'
-        target='_blank'
-        class='flex flex-row items-center gap-x-3 rounded-full border bg-background px-4 py-2 text-sm shadow-sm transition-shadow hover:shadow-md'
-      >
-        <span class='relative flex items-center justify-center'>
-          <span
-            class='absolute size-2 animate-ping rounded-full border border-green-400 bg-green-400 opacity-75'
-          ></span>
-          <span class='size-2 rounded-full bg-green-400'></span>
-        </span>
-        <p class='font-medium text-muted-foreground'>Get Template</p>
-      </a>
+      <div class='flex flex-wrap justify-center gap-3'>
+        <Button title='Read posts' href='/blog' variant='ahead' />
+        <Button title='About me' href='/about' variant='ahead' />
+      </div>
     </section>
 
     <div id='content' class='animate flex flex-col gap-y-10 md:w-4/5 lg:w-5/6'>
-      <Section title='About'>
-        <p class='text-muted-foreground'>Developer / Designer</p>
+      <Section title='Profile'>
         <p class='text-muted-foreground'>
-          Lorem ipsum dolor sit amet, vidit suscipit at mei. Quem denique mea id. Usu ei regione
-          indoctum dissentiunt, cu meliore fuisset mei, vel quod voluptua ne. Ex dicat impedit mel,
-          at eum oratio possit voluptatum.
+          华中师范大学计算机学院专业硕士在读，研究方向为弱监督文本驱动行人检索，一作 IEEE TMM（CCF
+          A）在审。比起只把结果贴出来，我更想记录过程：为什么这样选型，哪里踩坑，哪些想法后来被推翻。
         </p>
-        <Button title='More about me' class='w-fit self-end' href='/about' variant='ahead' />
+        <p class='text-muted-foreground'>
+          这个博客也会顺手留下能证明技术能力的痕迹，但它首先是我的长期记录：把学习、研究、项目和生活里的小发现写得有趣一点。
+        </p>
       </Section>
+
+      <Section title='Now'>
+        <div class='grid grid-cols-1 gap-3 sm:grid-cols-2'>
+          <Card
+            heading='AI workflow experiments'
+            subheading='Dify、Workflow、Tool Use、MCP、RAG、内容生成与发布闭环'
+          />
+          <Card
+            heading='Multimodal research notes'
+            subheading='PyTorch、Transformers、多模态检索、DDP 训练、向量检索与模型服务化'
+          />
+        </div>
+      </Section>
+
+      <Section title='Experiments'>
+        <Card
+          heading='Personal Knowledge Publishing Agent'
+          subheading='基于 Dify 二次开发的个人知识沉淀与技术内容发布 Agent'
+          date='2026.04 - 至今'
+        >
+          <p class='text-muted-foreground'>
+            想解决的问题很朴素：平时读到、想到、聊到的碎片太容易散掉。这个项目尝试把碎片输入结构化，再通过长期记忆
+            / RAG 召回，最后生成博客草稿并接到发布工具链。
+          </p>
+        </Card>
+        <Card
+          heading='弱监督文本-图像行人检索'
+          subheading='硕士研究课题，一作 IEEE TMM（CCF A）在审论文工作'
+        >
+          <p class='text-muted-foreground'>
+            基于 ALBEF 引入伪标签可靠性建模与边界样本校准，在 CUHK-PEDES、ICFG-PEDES、RSTPReid
+            等数据集完成实验。这里后续会写一些训练、复现、日志管理和 bad case 分析里的具体经验。
+          </p>
+        </Card>
+        <Button
+          title='More project details'
+          class='w-fit self-end'
+          href='/projects'
+          variant='ahead'
+        />
+      </Section>
+
+      <Section title='Education'>
+        <Card
+          heading='华中师范大学 | 计算机学院'
+          subheading='专业硕士研究生，视觉-文本跨模态方向'
+          date='2024.09 - 2027.06（预计）'
+        />
+        <Card
+          heading='湖北经济学院 | 物流工程'
+          subheading='工学学士，本科后有一年配送业务一线执行经历'
+          date='2017.09 - 2021.06'
+        />
+      </Section>
+
+      <Section title='Practice'>
+        <Card heading='多模态情感计算小组' subheading='服务器运维与研发支持' date='研究生阶段'>
+          <p class='text-muted-foreground'>
+            负责训练服务器组装、Linux / CUDA 环境配置、VPN 与权限维护，并用 Shell
+            脚本处理环境初始化、日志清理和结果归档。
+          </p>
+        </Card>
+        <Card
+          heading='WPS 菁英工程师培养计划'
+          subheading='C++ / Qt 方向，8 周结业认证'
+          date='2026.03 - 2026.05'
+        />
+      </Section>
+
+      <Section title='Skills'>
+        {skillGroups.map((group) => <SkillLayout title={group.title} skills={group.skills} />)}
+      </Section>
+
       {
         allPostsByDate.length > 0 && (
           <Section title='Posts'>
@@ -97,101 +185,6 @@ if (!images[imagePath])
           </Section>
         )
       }
-
-      {
-        /* <Section title='Experience'>
-      <Card
-        heading='Lorem Ipsum'
-        subheading='Sit amet consectetur'
-        date='Dec 2022 - Nov 2023'
-        imagePath='/src/assets/about-astro.png'
-        altText='Lorem, ipsum dolor sit'
-        imageClass='h-12 w-auto md:-start-16'
-      >
-        <ul class='ms-4 list-disc text-muted-foreground'>
-          <li>
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dolore debitis recusandae, ut
-            molestiae laboriosam pariatur!
-
-            <li>Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestiae, pariatur!</li>
-          </li>
-        </ul>
-      </Card>
-      <Card
-        heading='Lorem Ipsum'
-        subheading='Sit amet consectetur'
-        date='Dec 2022 - Nov 2023'
-        imagePath='/src/assets/about-astro.png'
-        altText='Lorem, ipsum dolor sit'
-        imageClass='h-12 w-auto md:-start-16'
-      />
-    </Section> */
-      }
-      <Section title='Education'>
-        <Card
-          as='a'
-          heading='Lorem ipsum'
-          subheading='Lorem ipsum dolor sit amet, vidit suscipit at mei.'
-          date='August 2021 - July 2025'
-          href='https://www.youtube.com/watch?v=dQw4w9WgXcQ'
-        >
-          {
-            /* <ul class='ms-4 list-disc text-muted-foreground'>
-          <li>
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dolore debitis recusandae, ut
-            molestiae laboriosam pariatur!
-          </li>
-          <li>Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestiae, pariatur!</li>
-        </ul> */
-          }
-        </Card>
-      </Section>
-
-      <Section title='Website List'>
-        <div class='grid grid-cols-1 gap-3 sm:grid-cols-2'>
-          <ProjectCard
-            href='https://www.youtube.com/watch?v=dQw4w9WgXcQ'
-            heading='Lorem ipsum'
-            subheading='Do not go gentle into that good night'
-            imagePath='/src/assets/projects/1.avif'
-          />
-          <ProjectCard
-            href='https://www.youtube.com/watch?v=dQw4w9WgXcQ'
-            heading='Lorem ipsum'
-            subheading='Old age burn and rave at close of day'
-            imagePath='/src/assets/projects/2.avif'
-          />
-          <ProjectCard
-            href='https://www.youtube.com/watch?v=dQw4w9WgXcQ'
-            heading='Lorem ipsum'
-            subheading='Rage, rage against the dying of the light'
-            imagePath='/src/assets/projects/3.avif'
-          />
-          <ProjectCard
-            href='/projects'
-            heading='More projects'
-            subheading='Check out more projects'
-            imagePath='/src/assets/projects/4.avif'
-          />
-        </div>
-      </Section>
-
-      <Section title='Certifications'>
-        <Card
-          as='a'
-          heading='Lorem ipsum'
-          subheading='Lorem ipsum dolor sit amet, vidit suscipit at mei. Quem denique mea id. Usu ei regione indoctum dissentiunt, cu meliore fuisset mei, vel quod voluptua ne. Ex dicat impedit mel, at eum oratio possit voluptatum. Dicat ceteros cu vim. Impetus fuisset ullamcorper pri cu, his posse iisque ad, aliquam honestatis usu id.'
-          date='July 2024'
-          href='https://www.youtube.com/watch?v=dQw4w9WgXcQ'
-        />
-      </Section>
-
-      <Section title='Skills'>
-        <SkillLayout title='Languages' skills={languages} />
-        <SkillLayout title='Frontend' skills={frontend} />
-        <SkillLayout title='Backend' skills={backend} />
-      </Section>
     </div>
-    <Quote class='mt-12' />
   </main>
 </PageLayout>

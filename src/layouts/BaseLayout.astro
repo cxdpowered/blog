@@ -1,5 +1,5 @@
 ---
-import { Footer, Header, ThemeProvider } from 'astro-pure/components/basic'
+import { Header, ThemeProvider } from 'astro-pure/components/basic'
 import type { SiteMeta } from 'astro-pure/types'
 import BaseHead from '@/components/BaseHead.astro'
 import config from '@/site-config'
@@ -45,7 +45,6 @@ const {
       <div class='flex-1 w-full'>
         <slot />
       </div>
-      <Footer />
     </div>
 
     {/* Set highlight color */}

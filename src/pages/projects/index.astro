@@ -1,206 +1,113 @@
 ---
 import { Image } from 'astro:assets'
 
-import { Button, Collapse, Icon } from 'astro-pure/user'
+import { Button, Card } from 'astro-pure/user'
 import PageLayout from '@/layouts/CommonPage.astro'
-import ProjectSection from '@/components/projects/ProjectSection.astro'
-import Sponsors from '@/components/projects/Sponsors.astro'
-import Sponsorship from '@/components/projects/Sponsorship.astro'
-import alipay from '@/assets/alipay-qrcode.jpg'
-import KeyIcon from '@/assets/icons/key.svg'
-import wechat from '@/assets/wechat-qrcode.jpg'
 
 const headings = [
-  { depth: 2, slug: 'programs', text: 'Programs' },
-  { depth: 2, slug: 'learnings', text: 'Learnings' },
-  { depth: 2, slug: 'others', text: 'Others' },
-  { depth: 2, slug: 'gpg-signature', text: 'GPG Signature' },
-  { depth: 2, slug: 'sponsorship', text: 'Sponsorship' }
+  { depth: 2, slug: 'main-project', text: 'Main Project' },
+  { depth: 2, slug: 'research-projects', text: 'Research Projects' },
+  { depth: 2, slug: 'engineering-practice', text: 'Engineering Practice' },
+  { depth: 2, slug: 'github', text: 'GitHub' }
 ]
 ---
 
 <PageLayout title='Projects' {headings} view>
-  {/* About astro-pure */}
-  <div class='not-prose flex justify-center'>
-    <a
-      href='/docs/advanced/about' target='_blank'
-      class='flex items-center gap-x-3 rounded-full border bg-background px-4 py-2 text-sm shadow-sm transition-shadow hover:shadow-md'
-    >
-      <span class='size-2 rounded-full bg-green-400'></span>
-      <p class='font-medium text-muted-foreground'>About Astro-Theme-Pure Project</p>
-    </a>
-  </div>
-  <p>Github Activities:</p>
+  <p>
+    这里放一些我实际折腾过、还会继续写下去的项目。它们不是奖状墙，更像目录：以后每个项目都应该能长出几篇具体的复盘、踩坑和实现笔记。
+  </p>
+
+  <h2 id='main-project'>Main Project</h2>
+  <Card
+    heading='Personal Knowledge Publishing Agent'
+    subheading='基于 Dify 二次开发的个人知识沉淀与技术内容发布 Agent'
+    date='2026.04 - 至今'
+  >
+    <p class='text-muted-foreground'>
+      面向日常学习、项目记录和技术写作场景，把 Claude / Codex 对话片段、Obsidian
+      笔记、手动学习记录等碎片输入结构化沉淀为长期记忆，再通过 RAG 召回上下文生成博客草稿，最后接入
+      MCP 发布工具链完成 Astro / Vercel 博客发布闭环。
+    </p>
+    <ul class='ms-4 list-disc text-muted-foreground'>
+      <li>Dify 1.14.2 本地 Docker Compose 已跑通，并接入自研 FastAPI OpenAPI Custom Tool。</li>
+      <li>FastAPI 服务支持结构化记录、JSONL 持久化、检索、草稿生成和 dry-run 发布动作。</li>
+      <li>发布工具链覆盖 frontmatter 校验、SEO 补全、死链检查、git push 和 Vercel 部署轮询。</li>
+      <li>后续补 Langfuse trace、分类准确率、RAG 召回命中率和草稿可用率评估。</li>
+    </ul>
+  </Card>
+
+  <h2 id='research-projects'>Research Projects</h2>
+  <Card
+    heading='弱监督文本-图像行人检索'
+    subheading='硕士研究课题，一作 IEEE TMM（CCF A）在审论文工作'
+  >
+    <p class='text-muted-foreground'>
+      在 ALBEF
+      视觉-语言预训练框架上引入伪标签可靠性建模与边界样本校准机制，缓解弱监督噪声标签对跨模态对齐的影响。
+      实验覆盖 CUHK-PEDES、ICFG-PEDES、RSTPReid 等公开数据集，工程上负责 PyTorch pipeline、DDP
+      训练、日志归档和结果分析。
+    </p>
+    <div class='mt-3 flex flex-wrap gap-3'>
+      <Button title='Related repo' href='https://github.com/cxdpowered/ICPG' target='_blank' />
+    </div>
+  </Card>
+  <Card
+    heading='围岩裂隙精准识别与三维模型重构'
+    subheading='研究生数学建模大赛 C 题，队长，国家级二等奖'
+  >
+    <p class='text-muted-foreground'>
+      构建图像预处理、裂隙检测 / 分割、三维重建、参数量化方案，并负责算法实现、误差分析和论文撰写。
+    </p>
+    <div class='mt-3 flex flex-wrap gap-3'>
+      <Button title='GMCM repo' href='https://github.com/cxdpowered/GMCM' target='_blank' />
+    </div>
+  </Card>
+
+  <h2 id='engineering-practice'>Engineering Practice</h2>
+  <Card heading='This Blog' subheading='当前站点，技术写作和发布实验场'>
+    <p class='text-muted-foreground'>
+      基于 Astro 5、Vercel adapter 和 astro-pure
+      主题做定制，保留博客、项目、About、搜索等入口。后续会接入个人知识发布 Agent
+      的草稿和发布链路，让这个博客本身也成为一个长期实验。
+    </p>
+    <div class='mt-3 flex flex-wrap gap-3'>
+      <Button title='Live site' href='https://blog-iota-three.vercel.app/' target='_blank' />
+      <Button title='Source' href='https://github.com/cxdpowered/blog' target='_blank' />
+    </div>
+  </Card>
+  <Card heading='WPS 菁英工程师培养计划' subheading='C++ / Qt 方向，8 周结业认证'>
+    <p class='text-muted-foreground'>
+      完成 Qt 跨平台 GUI、信号槽、事件循环与桌面应用工程化训练；结业项目为基于 Qt
+      的打字训练桌面应用。
+    </p>
+  </Card>
+  <Card heading='多模态情感计算小组' subheading='训练服务器运维与研发支持'>
+    <p class='text-muted-foreground'>
+      负责实验室训练服务器硬件组装、Linux / CUDA 环境配置、VPN 与权限维护，并编写 Shell
+      脚本用于环境初始化、日志清理和结果归档。
+    </p>
+  </Card>
+
+  <h2 id='github'>GitHub</h2>
+  <p>
+    GitHub 里是一些折腾痕迹和学习路径。当前公开仓库包括 Astro 博客、ICPG 相关代码、GMCM、Rasa
+    实验和前端基础练习等。
+  </p>
   <p>
     <Image
-      src='https://ghchart.rshah.org/659eb9/cworld1'
-      alt='github activities'
+      src='https://ghchart.rshah.org/659eb9/cxdpowered'
+      alt='cxdpowered GitHub activities'
       inferSize
       loading='lazy'
     />
   </p>
-  <p>
-    If you think it would be useful or interesting to collaborate on a project, you can donate to
-    support my work or contact me to discuss a project.
-  </p>
-  <Button title='Checkout sponsorship' class='w-fit' href='#sponsorship'>
-    <Icon class='size-5' name='receive-money' slot='before' />
-  </Button>
-
-  <h2 id='programs'>Programs</h2>
-  <ProjectSection
-    projects={[
-      {
-        name: '🎨 Astro Theme Pure',
-        description: 'A simple, fast and powerful blog & document theme built by Astro',
-        links: [
-          { type: 'github', href: 'https://github.com/cworld1/astro-theme-pure' },
-          { type: 'site', href: 'https://astro-pure.js.org/' },
-          { type: 'doc', href: 'https://astro-pure.js.org/docs/list' },
-          { type: 'release', href: 'https://www.npmjs.com/package/astro-pure' }
-        ]
-      },
-      {
-        name: '💄 PKU Art',
-        description: 'A script to beautify pku course website',
-        links: [
-          { type: 'github', href: 'https://github.com/zhuozhiyongde/pku-art' },
-          { type: 'site', href: 'https://github.com/zhuozhiyongde/pku-art' },
-          { type: 'doc', href: 'https://docs.arthals.ink/docs/pku-art' }
-        ]
-      }
-    ]}
-  />
-  <Collapse title='Some old projects'>
-    <ProjectSection
-      projects={[
-        {
-          name: '🧩 rehype-autolink-headings-simple',
-          description: 'A simple version of rehype-autolink-headings',
-          links: [
-            { type: 'github', href: 'https://github.com/cworld1/rehype-autolink-headings-simple' },
-            {
-              type: 'release',
-              href: 'https://www.npmjs.com/package/rehype-autolink-headings-simple'
-            }
-          ]
-        },
-        {
-          name: 'Gaussian NB',
-          description:
-            'Simulating the Parsimonious Bayesian Algorithm with Python and Finding the Probability Prediction of Breast Cancer ',
-          links: [{ type: 'github', href: 'https://github.com/cworld1/gaussian-nb' }]
-        }
-      ]}
+  <div class='not-prose flex flex-wrap gap-3'>
+    <Button
+      title='Open GitHub'
+      href='https://github.com/cxdpowered'
+      target='_blank'
+      variant='ahead'
     />
-  </Collapse>
-
-  <h2 id='learnings'>Learnings</h2>
-  <ProjectSection
-    class='my-2'
-    projects={[
-      {
-        name: 'R Learning',
-        description: 'Some notes and code about learning R language',
-        links: [
-          { type: 'github', href: 'https://github.com/cworld1/r-learning' },
-          { type: 'site', href: 'https://cworld1.github.io/r-learning' }
-        ]
-      },
-      {
-        name: 'CS 213 Learning',
-        description: 'Notes, code and experiences for Introduction to Computer Systems course',
-        links: [
-          {
-            type: 'github',
-            href: 'https://github.com/zhuozhiyongde/Introduction-To-Computer-System-2023Fall-PKU'
-          }
-        ]
-      }
-    ]}
-  />
-
-  <h2 id='others'>Others</h2>
-  <ProjectSection
-    projects={[
-      {
-        name: 'CWorld',
-        description: "CWorld's Github",
-        links: [{ type: 'github', href: 'https://github.com/cworld1' }]
-      },
-      {
-        name: 'Arthals',
-        description: 'Arthals Github',
-        links: [{ type: 'github', href: 'https://github.com/zhuozhiyongde' }]
-      }
-    ]}
-  />
-
-  <h2 id='gpg-signature'>GPG Signature</h2>
-  <p>
-    You can verify the authenticity of the files I signed by checking the GPG signature. My GPG key
-    is <code>114514</code>, and you can find it on the opengpg key servers or download from it.
-  </p>
-  <Button href='https://keys.openpgp.org/search?q=114514' title='Checkout my key' target='_blank'>
-    <KeyIcon class='size-5' slot='before' />
-  </Button>
-
-  <h2 id='sponsorship'>Sponsorship</h2>
-  <p>Chinese methods: <a href="https://afdian.com/a/cworld" target="_blank">Afadian</a>, Wechat or Alipay </p>
-  <Sponsorship
-    methods={[
-      { name: 'WeChat', icon: 'wechat-pay', image: wechat },
-      { name: 'Alipay', icon: 'alipay', image: alipay }
-    ]}
-  />
-  <p>Global methods: <a href="https://ko-fi.com/cworld0" target="_blank">Ko-fi</a> </p>
-  <p>Please leave a message or contact me proactively after sponsorship. My email is:
-    <code style='cursor: pointer'
-      onclick='const m=atob(this.textContent);alert(m);window.open(`mailto:${m}`,"_blank")'
-    >Y3dvcmxkMEBxcS5jb20=</code>
-    (click code to transform base64).
-  </p>
-  <p>Thanks to the following sponsors:</p>
-  <Sponsors
-    progressMax={50}
-    sponsors={[
-      { name: 'Saneko', platform: 'Wechat', amount: 188, date: '2026-02-25' },
-      { name: '边缘星2020', platform: 'Afdian', amount: 20.26, date: '2026-02-17' },
-      { name: 'Juyao Huang', platform: 'Wechat', amount: 5, date: '2026-01-15' },
-      { name: 'hoochanlon', platform: 'Wechat', amount: 5, date: '2025-11-09' },
-      { name: 'Arthals', platform: 'Wechat', amount: 50, date: '2025-11-06' },
-      { name: '边缘星2020 (byx2020.com)', platform: 'Alipay', amount: 50, date: '2025-11-01' },
-      { name: '小哲', platform: 'Wechat', amount: 50, date: '2025-08-19' },
-      { name: 'Open1V', platform: 'Wechat', amount: 2, date: '2025-08-14' },
-      { name: 'Luis Xu', platform: 'Alipay', amount: 30, date: '2025-08-03' },
-      { name: '顾**', platform: 'Wechat', amount: 28, date: '2025-06-23' },
-      { name: 'Hans J.Han', platform: 'Wechat', amount: 10, date: '2025-04-04' },
-      { name: '**青', platform: 'Alipay', amount: 12, date: '2024-05-21' },
-      { name: 'Anonymous', platform: 'Wechat', amount: 20, date: '2022-04-06' },
-      { name: '华雄', platform: 'QQ', amount: 5, date: '2019-12-30' },
-      { name: '◌', platform: 'QQ', amount: 3, date: '2019-12-30' },
-      // 酷安@暴走の蜗牛
-      { name: 'C*a', amount: 2, date: '2019-07-02' }
-    ]}
-  />
+    <Button title='Back to about' href='/about' variant='ahead' />
+  </div>
 </PageLayout>
-
-<style>
-  .sponsorship-card {
-    & .sponsorship-card-img {
-      opacity: 0.3;
-      --un-blur: blur(4px);
-      filter: var(--un-blur);
-    }
-
-    &:hover {
-      & .sponsorship-card-icon {
-        opacity: 0;
-      }
-      & .sponsorship-card-img {
-        opacity: 1;
-        --un-blur: blur(0);
-      }
-    }
-  }
-</style>
