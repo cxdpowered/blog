@@ -1,7 +1,7 @@
 ---
-title: Prompt Caching 没那么玄：让模型少算一遍重复前缀
+title: Prompt Caching 需要留意和微操省钱点
 description: 从 KV cache 和 prefill 成本的角度重新理解 prompt caching：它不是模型有记忆，而是服务端把稳定前缀的计算结果跨请求复用。
-publishDate: 2026-05-26 22:00:00
+publishDate: 2026-05-3 22:00:00
 tags:
   - LLM
   - Anthropic
@@ -27,13 +27,11 @@ tags:
 
 这也是为什么 agent 对话越长越贵、越慢。你不是只在为“这一轮新问题”付费，而是在反复为同一段历史付 prefill 成本。
 
-补一句：tool use 也不是模型真的伸手去读文件、调接口。模型输出一段结构化文本，外层 runtime 执行工具，再把工具结果塞回下一轮输入。还是 sequence in、sequence out，只是外面多了一层协议。
+补一句：tool use 也不是模型真的伸手去读文件、调接口。模型输出一段结构化文本，外层 runtime 执行工具，再把工具结果塞回下一轮输入。还是 sequence in、sequence out，只是外面多了一层协议。描述是固定的是典型的cache。
 
-## 你早就用过 KV Cache
 
-回忆 autoregressive generation。
 
-生成第 100 个 token 时，当前 token 的 query 要去 attend 前 99 个 token 的 key/value。如果每生成一个 token 都把前面所有 token 的 K/V 重新算一遍，就会有大量重复计算。
+回忆 autoregressive generation。生成第 100 个 token 时，当前 token 的 query 要去 attend 前 99 个 token 的 key/value。如果每生成一个 token 都把前面所有 token 的 K/V 重新算一遍，就会有大量重复计算。
 
 所以推理框架一般会用 KV cache：前面 token 的 key/value 算过以后存起来，下一步只算新增 token 的 K/V。[Hugging Face 的 Transformers 文档](https://huggingface.co/docs/transformers/main/kv_cache)也是这么解释的：KV cache 存储 key/value 计算结果，用来避免自回归生成时重复计算。
 
@@ -90,7 +88,7 @@ Anthropic 的算账最容易看清楚：
 
 agent 场景很容易超过这个门槛。一份 `CLAUDE.md`、tool schema、项目背景，在一次会话里被带上几十轮，很快就不是小钱。
 
-DeepSeek 更夸张一点。V4 Flash 官网当前 miss 是 $0.14 / 1M tokens，hit 是 $0.0028 / 1M tokens，相当于 cache hit 部分打到 2%。但它是 best-effort，不保证 100% 命中；官方也说 cache 构建要几秒，不再使用后通常几小时到几天内清理。
+DeepSeek 更夸张一点。V4 Flash 官网当前 miss 是 $0.14 / 1M tokens，hit 是 $0.0028 / 1M tokens，相当于 cache hit 部分打到 2%。但它是 best-effort，不保证 100% 命中；官方也说 cache 构建要几秒，不再使用后通常几小时到几天内清理。（DeepSeek是真便宜）
 
 ## 各家规则不一样，但核心都是 prefix
 
