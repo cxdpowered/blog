@@ -4,14 +4,12 @@ description: 从 KV cache 和 prefill 成本的角度重新理解 prompt caching
 publishDate: 2026-05-3 22:00:00
 tags:
   - LLM
-  - Anthropic
-  - OpenAI
-  - DeepSeek
   - Prompt Engineering
-  - Claude
+  - Anthropic
+  - DeepSeek
 ---
 
-学 prompt caching 的时候，我第一反应是：这东西其实就是我早就熟悉的 KV cache，只是缓存活得更久，作用域从一次生成扩展到了多次 API 请求。
+学 prompt caching 的时候发现：这东西其实就是我早就熟悉的 KV cache，只是缓存活得更久，作用域从一次生成扩展到了多次 API 请求。
 
 当然，严格一点说，各家的实现不完全一样。[OpenAI 文档](https://developers.openai.com/api/docs/guides/prompt-caching)现在明确写到，extended prompt caching 会把 attention 层 prefill 阶段产生的 key/value tensors 临时放到 GPU-local storage；[DeepSeek](https://api-docs.deepseek.com/guides/kv_cache/)叫 Context Caching on Disk；[Anthropic](https://platform.claude.com/docs/en/build-with-claude/prompt-caching)主要暴露的是 cache breakpoint 和 TTL，不承诺具体怎么存。
 
