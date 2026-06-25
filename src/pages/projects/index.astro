@@ -5,10 +5,44 @@ import { Button, Card } from 'astro-pure/user'
 import PageLayout from '@/layouts/CommonPage.astro'
 
 const headings = [
+  { depth: 2, slug: 'featured', text: 'Featured' },
   { depth: 2, slug: 'main-project', text: 'Main Project' },
   { depth: 2, slug: 'research-projects', text: 'Research Projects' },
   { depth: 2, slug: 'engineering-practice', text: 'Engineering Practice' },
   { depth: 2, slug: 'github', text: 'GitHub' }
+]
+
+// 统一的技术标签样式
+const tag =
+  'inline-flex items-center rounded-md border bg-card px-2 py-0.5 text-xs text-muted-foreground'
+
+const featured = [
+  {
+    heading: '小青团 · xiaoqingtuan',
+    subheading: '面向 QQ / 微信的个人任务型 LLM Agent 助手',
+    date: '2026.05 - 至今',
+    repo: 'https://github.com/cxdpowered/xiaoqingtuan',
+    points: [
+      '对话与任务执行共用同一套 function calling 工具循环，闲聊和真正“办事”走同一条路径。',
+      'Wiki-first 长期记忆：以 Markdown 为事实来源，结合 BM25 + 语义的混合检索召回上下文。',
+      '多用户 / 多账号隔离，支持 QQ ↔ 微信跨平台绑定，高风险操作设人工确认与审计日志。',
+      '工具可扩展：wiki 检索、笔记写入、web 搜索，并可接入外部 MCP 服务（如下方图书馆选座）。'
+    ],
+    tags: ['Python', 'LangGraph', 'DeepSeek', 'NoneBot2 / OneBot V11', 'LanceDB + FTS5', 'MCP', 'Docker']
+  },
+  {
+    heading: 'mcp-ccnu-lib',
+    subheading: '把华师图书馆选座系统封装成可被模型调用的 MCP 工具',
+    date: '2026.06',
+    repo: 'https://github.com/cxdpowered/mcp-ccnu-lib',
+    points: [
+      '覆盖登录、查座、预约、取消、暂离 / 返回全流程，基于 Playwright 维持持久会话与 CAS(SSO) 登录。',
+      '预约支持精确选座 / 首个可用 / 随机 / 收藏优先等多种策略，并直连图书馆 JSON API（HMAC 签名）。',
+      '验证码 / 短信采用“挂起返回”模型：服务把 base64 图片交回客户端由用户手动输入，不阻塞流程。',
+      '通过 user_key 做多用户隔离，高风险动作标记为需客户端授权——服务只执行，决策与调度交给小青团。'
+    ],
+    tags: ['Python', 'Playwright', 'MCP (Streamable HTTP)', 'SQLite', 'Docker']
+  }
 ]
 ---
 
@@ -16,6 +50,39 @@ const headings = [
   <p>
     这里放一些我实际折腾过、还会继续写下去的项目。它们不是奖状墙，更像目录：以后每个项目都应该能长出几篇具体的复盘、踩坑和实现笔记。
   </p>
+
+  <h2 id='featured'>Featured</h2>
+  <p>
+    最近做的两个项目，它们其实是一对：<strong>小青团</strong> 是跑在 IM 里的 Agent
+    客户端，<strong>mcp-ccnu-lib</strong> 是它能调用的一个 MCP
+    服务，负责把“给我抢个图书馆座位”这类自然语言指令落到真实动作上。
+  </p>
+  <div class='not-prose grid grid-cols-1 gap-4 lg:grid-cols-2'>
+    {
+      featured.map((p) => (
+        <Card
+          heading={p.heading}
+          subheading={p.subheading}
+          date={p.date}
+          class='flex h-full flex-col transition-all hover:border-primary/40 hover:shadow-md'
+        >
+          <ul class='ms-4 mt-1 list-disc text-sm text-muted-foreground'>
+            {p.points.map((point) => (
+              <li>{point}</li>
+            ))}
+          </ul>
+          <div class='mt-4 flex flex-wrap gap-2'>
+            {p.tags.map((t) => (
+              <span class={tag}>{t}</span>
+            ))}
+          </div>
+          <div class='mt-auto pt-4'>
+            <Button title='View on GitHub' href={p.repo} target='_blank' variant='ahead' />
+          </div>
+        </Card>
+      ))
+    }
+  </div>
 
   <h2 id='main-project'>Main Project</h2>
   <Card
@@ -34,34 +101,53 @@ const headings = [
       <li>发布工具链覆盖 frontmatter 校验、SEO 补全、死链检查、git push 和 Vercel 部署轮询。</li>
       <li>后续补 Langfuse trace、分类准确率、RAG 召回命中率和草稿可用率评估。</li>
     </ul>
+    <div class='mt-4 flex flex-wrap gap-2'>
+      {['Dify', 'FastAPI', 'RAG', 'MCP', 'Docker Compose', 'Astro / Vercel'].map((t) => (
+        <span class={tag}>{t}</span>
+      ))}
+    </div>
   </Card>
 
   <h2 id='research-projects'>Research Projects</h2>
-  <Card
-    heading='弱监督文本-图像行人检索'
-    subheading='硕士研究课题，一作 IEEE TMM（CCF A）在审论文工作'
-  >
-    <p class='text-muted-foreground'>
-      在 ALBEF
-      视觉-语言预训练框架上引入伪标签可靠性建模与边界样本校准机制，缓解弱监督噪声标签对跨模态对齐的影响。
-      实验覆盖 CUHK-PEDES、ICFG-PEDES、RSTPReid 等公开数据集，工程上负责 PyTorch pipeline、DDP
-      训练、日志归档和结果分析。
-    </p>
-    <div class='mt-3 flex flex-wrap gap-3'>
-      <Button title='Related repo' href='https://github.com/cxdpowered/ICPG' target='_blank' />
-    </div>
-  </Card>
-  <Card
-    heading='围岩裂隙精准识别与三维模型重构'
-    subheading='研究生数学建模大赛 C 题，队长，国家级二等奖'
-  >
-    <p class='text-muted-foreground'>
-      构建图像预处理、裂隙检测 / 分割、三维重建、参数量化方案，并负责算法实现、误差分析和论文撰写。
-    </p>
-    <div class='mt-3 flex flex-wrap gap-3'>
-      <Button title='GMCM repo' href='https://github.com/cxdpowered/GMCM' target='_blank' />
-    </div>
-  </Card>
+  <div class='not-prose grid grid-cols-1 gap-4 sm:grid-cols-2'>
+    <Card
+      heading='弱监督文本-图像行人检索'
+      subheading='硕士研究课题，一作 IEEE TMM（CCF A）在审论文工作'
+      class='flex h-full flex-col'
+    >
+      <p class='text-sm text-muted-foreground'>
+        在 ALBEF
+        视觉-语言预训练框架上引入伪标签可靠性建模与边界样本校准机制，缓解弱监督噪声标签对跨模态对齐的影响。
+        实验覆盖 CUHK-PEDES、ICFG-PEDES、RSTPReid 等公开数据集，工程上负责 PyTorch pipeline、DDP
+        训练、日志归档和结果分析。
+      </p>
+      <div class='mt-3 flex flex-wrap gap-2'>
+        {['PyTorch', 'ALBEF', 'DDP', '跨模态检索'].map((t) => (
+          <span class={tag}>{t}</span>
+        ))}
+      </div>
+      <div class='mt-auto pt-4'>
+        <Button title='Related repo' href='https://github.com/cxdpowered/ICPG' target='_blank' variant='ahead' />
+      </div>
+    </Card>
+    <Card
+      heading='围岩裂隙精准识别与三维模型重构'
+      subheading='研究生数学建模大赛 C 题，队长，国家级二等奖'
+      class='flex h-full flex-col'
+    >
+      <p class='text-sm text-muted-foreground'>
+        构建图像预处理、裂隙检测 / 分割、三维重建、参数量化方案，并负责算法实现、误差分析和论文撰写。
+      </p>
+      <div class='mt-3 flex flex-wrap gap-2'>
+        {['图像处理', '三维重建', '参数量化'].map((t) => (
+          <span class={tag}>{t}</span>
+        ))}
+      </div>
+      <div class='mt-auto pt-4'>
+        <Button title='GMCM repo' href='https://github.com/cxdpowered/GMCM' target='_blank' variant='ahead' />
+      </div>
+    </Card>
+  </div>
 
   <h2 id='engineering-practice'>Engineering Practice</h2>
   <Card heading='This Blog' subheading='当前站点，技术写作和发布实验场'>
@@ -70,6 +156,11 @@ const headings = [
       主题做定制，保留博客、项目、About、搜索等入口。后续会接入个人知识发布 Agent
       的草稿和发布链路，让这个博客本身也成为一个长期实验。
     </p>
+    <div class='mt-4 flex flex-wrap gap-2'>
+      {['Astro 5', 'Vercel', 'TypeScript', 'UnoCSS'].map((t) => (
+        <span class={tag}>{t}</span>
+      ))}
+    </div>
     <div class='mt-3 flex flex-wrap gap-3'>
       <Button title='Live site' href='https://blog-iota-three.vercel.app/' target='_blank' />
       <Button title='Source' href='https://github.com/cxdpowered/blog' target='_blank' />
@@ -80,18 +171,28 @@ const headings = [
       完成 Qt 跨平台 GUI、信号槽、事件循环与桌面应用工程化训练；结业项目为基于 Qt
       的打字训练桌面应用。
     </p>
+    <div class='mt-4 flex flex-wrap gap-2'>
+      {['C++', 'Qt', '桌面应用'].map((t) => (
+        <span class={tag}>{t}</span>
+      ))}
+    </div>
   </Card>
   <Card heading='多模态情感计算小组' subheading='训练服务器运维与研发支持'>
     <p class='text-muted-foreground'>
       负责实验室训练服务器硬件组装、Linux / CUDA 环境配置、VPN 与权限维护，并编写 Shell
       脚本用于环境初始化、日志清理和结果归档。
     </p>
+    <div class='mt-4 flex flex-wrap gap-2'>
+      {['Linux', 'CUDA', 'Shell', '运维'].map((t) => (
+        <span class={tag}>{t}</span>
+      ))}
+    </div>
   </Card>
 
   <h2 id='github'>GitHub</h2>
   <p>
-    GitHub 里是一些折腾痕迹和学习路径。当前公开仓库包括 Astro 博客、ICPG 相关代码、GMCM、Rasa
-    实验和前端基础练习等。
+    GitHub 里是一些折腾痕迹和学习路径。当前公开仓库包括小青团 Agent、mcp-ccnu-lib、Astro
+    博客、ICPG 相关代码、GMCM 等。
   </p>
   <p>
     <Image

@@ -113,6 +113,22 @@ const { class: className } = Astro.props
     display: inline-block;
   }
 
+  /* Fix comment subscribe (RSS) links: the global `a { display: inline-block }`
+     above overrides Waline's `.wl-rss > a { display: flex }`, which makes the
+     icon and text stack vertically and the row jitter on hover. Restore the
+     intended horizontal layout. */
+  #waline :global(.wl-rss) {
+    align-items: center;
+  }
+  #waline :global(.wl-rss > a) {
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+  }
+  #waline :global(.wl-rss span) {
+    white-space: nowrap;
+  }
+
   /* Reaction buttons */
   #waline :global(.wl-reaction-title, .wl-reaction-text) {
     display: none;
