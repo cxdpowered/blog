@@ -51,7 +51,7 @@ if (!images[imagePath])
       <Image
         src={images[imagePath]()}
         alt={config.logo.alt || 'Profile'}
-        class='h-28 w-28 rounded-3xl border p-1 shadow-sm'
+        class='h-28 w-28 rounded-3xl border bg-background p-1 shadow-sm'
         loading='eager'
         fetchpriority='high'
       />
@@ -59,9 +59,15 @@ if (!images[imagePath])
       <div class='flex flex-col items-center gap-y-4'>
         <div class='flex flex-col items-center gap-y-2'>
           <p
-            class='rounded-full border bg-muted px-3 py-1 text-sm font-medium text-muted-foreground'
+            class='inline-flex items-center gap-x-2 rounded-full border bg-muted px-3 py-1 text-sm font-medium text-muted-foreground'
           >
-            写点有趣的东西
+            <span class='relative flex size-2'>
+              <span
+                class='absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75'
+              ></span>
+              <span class='relative inline-flex size-2 rounded-full bg-green-500'></span>
+            </span>
+            I am alive
           </p>
           <h1 class='text-3xl font-medium sm:text-4xl'>{config.title}</h1>
           <p class='max-w-2xl text-muted-foreground'>
@@ -91,8 +97,7 @@ if (!images[imagePath])
     <div id='content' class='animate flex flex-col gap-y-10 md:w-4/5 lg:w-5/6'>
       <Section title='Profile'>
         <p class='text-muted-foreground'>
-          华中师范大学计算机学院专业硕士在读，研究方向为弱监督文本驱动行人检索，一作 IEEE TMM（CCF
-          A）在审。比起只把结果贴出来，我更想记录过程：为什么这样选型，哪里踩坑，哪些想法后来被推翻。
+          比起只把结果贴出来，我更想记录过程：为什么这样选型，哪里踩坑，哪些想法后来被推翻。
         </p>
         <p class='text-muted-foreground'>
           这个博客也会顺手留下能证明技术能力的痕迹，但它首先是我的长期记录：把学习、研究、项目和生活里的小发现写得有趣一点。
@@ -102,34 +107,46 @@ if (!images[imagePath])
       <Section title='Now'>
         <div class='grid grid-cols-1 gap-3 sm:grid-cols-2'>
           <Card
-            heading='AI workflow experiments'
-            subheading='Dify、Workflow、Tool Use、MCP、RAG、内容生成与发布闭环'
+            heading='LLM Agent 工程'
+            subheading='function calling 工具循环、长期记忆、MCP 工具化、多平台 IM 接入'
           />
           <Card
-            heading='Multimodal research notes'
-            subheading='PyTorch、Transformers、多模态检索、DDP 训练、向量检索与模型服务化'
+            heading='多模态检索研究'
+            subheading='ALBEF、弱监督跨模态对齐、PyTorch / DDP 训练与复现'
           />
         </div>
       </Section>
 
-      <Section title='Experiments'>
+      <Section title='Projects'>
         <Card
-          heading='Personal Knowledge Publishing Agent'
-          subheading='基于 Dify 二次开发的个人知识沉淀与技术内容发布 Agent'
-          date='2026.04 - 至今'
+          heading='小青团 · xiaoqingtuan'
+          subheading='面向 QQ / 微信的个人任务型 LLM Agent 助手'
+          date='2026.05 - 至今'
         >
           <p class='text-muted-foreground'>
-            想解决的问题很朴素：平时读到、想到、聊到的碎片太容易散掉。这个项目尝试把碎片输入结构化，再通过长期记忆
-            / RAG 召回，最后生成博客草稿并接到发布工具链。
+            对话与任务执行共用同一套 function calling
+            工具循环，闲聊和真正「办事」走同一条路径；Wiki-first 长期记忆配 BM25 +
+            语义混合检索，还能调用外部 MCP 服务（如下方图书馆选座）。
           </p>
         </Card>
         <Card
-          heading='弱监督文本-图像行人检索'
-          subheading='硕士研究课题，一作 IEEE TMM（CCF A）在审论文工作'
+          heading='mcp-ccnu-lib'
+          subheading='把华师图书馆选座系统封装成模型可调用的 MCP 工具'
+          date='2026.06'
         >
           <p class='text-muted-foreground'>
-            基于 ALBEF 引入伪标签可靠性建模与边界样本校准，在 CUHK-PEDES、ICFG-PEDES、RSTPReid
-            等数据集完成实验。这里后续会写一些训练、复现、日志管理和 bad case 分析里的具体经验。
+            覆盖登录、查座、预约、取消全流程，基于 Playwright
+            维持持久会话；验证码用「挂起返回」交回用户输入，不阻塞流程，决策与调度交给小青团。
+          </p>
+        </Card>
+        <Card
+          heading='个人知识发布 Agent'
+          subheading='基于 Dify 的知识沉淀与技术内容发布闭环'
+          date='2026.04 - 至今'
+        >
+          <p class='text-muted-foreground'>
+            把对话片段、笔记等碎片沉淀为长期记忆，经 RAG 召回生成博客草稿，再接 MCP 发布工具链完成
+            frontmatter 校验、死链检查到 Astro / Vercel 部署的发布闭环。
           </p>
         </Card>
         <Button
