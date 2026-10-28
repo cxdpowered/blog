@@ -37,10 +37,11 @@ const socialImage = heroImage
     : heroImage.src.src
   : config.socialCard
 const articleDate = updatedDate?.toISOString() ?? publishDate.toISOString()
+const hasTableOfContents = headings.some(({ depth }) => depth === 2 || depth === 3)
 ---
 
 <PageLayout editorial meta={{ articleDate, description, ogImage: socialImage, title }}>
-  <main id='article-top' class='article-shell'>
+  <main id='article-top' class:list={['article-shell', { 'article-has-toc': hasTableOfContents }]}>
     <article data-pagefind-body>
       <header id='content-header' class='article-header'>
         <div class='article-eyebrow'>
@@ -79,7 +80,7 @@ const articleDate = updatedDate?.toISOString() ?? publishDate.toISOString()
         )
       }
       <div class='article-layout'>
-        {!!headings.length && <ArticleTOC {headings} />}
+        {hasTableOfContents && <ArticleTOC {headings} />}
         <div id='content' class='article-prose prose'><slot /></div>
       </div>
       <div class='article-end-meta'>

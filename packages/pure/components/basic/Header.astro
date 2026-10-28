@@ -18,7 +18,7 @@ import { Icon } from '../user'
     {/* Menu links */}
     <div
       id='headerExpandContent'
-      class='end-0 start-0 top-12 grid border border-transparent group-[.not-top]:rounded-xl group-[.expanded]:opacity-100 dark:group-[.expanded.not-top]:bg-muted max-sm:absolute max-sm:opacity-0 max-sm:group-[.not-top]:border-border max-sm:group-[.expanded.not-top]:bg-background max-sm:group-[.not-top]:px-4 max-sm:group-[.not-top]:py-2 sm:grid-rows-1'
+      class='end-0 start-0 top-12 grid border border-transparent group-[.not-top]:rounded-xl dark:group-[.expanded.not-top]:bg-muted max-sm:group-[.not-top]:border-border max-sm:group-[.expanded.not-top]:bg-background max-sm:group-[.not-top]:px-4 max-sm:group-[.not-top]:py-2 sm:grid-rows-1'
     >
       <div class='flex flex-col items-center justify-center overflow-hidden sm:flex-row'>
         {
@@ -158,8 +158,10 @@ import { Icon } from '../user'
   }
 
   /* header menu */
-  @media (max-width: 639px) {
+  @media (width < 640px) {
     #headerExpandContent {
+      position: absolute;
+      opacity: 0;
       grid-template-rows: 0fr;
       transition:
         opacity 0.3s,
@@ -168,6 +170,7 @@ import { Icon } from '../user'
         grid-template-rows 0.3s;
     }
     .expanded #headerExpandContent {
+      opacity: 1;
       grid-template-rows: 1fr;
     }
     .expanded.not-top #headerExpandContent {
