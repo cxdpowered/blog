@@ -8,15 +8,18 @@ import config from '@/site-config'
 // all pages through the use of the <BaseLayout /> component.
 import '@/assets/styles/global.css'
 import '@/assets/styles/app.css'
+import '@/assets/styles/editorial.css'
 
 interface Props {
   meta: SiteMeta
   highlightColor?: string
+  editorial?: boolean
 }
 
 const {
   meta: { articleDate, description = config.description, ogImage, title },
   highlightColor,
+  editorial = false,
   ...props
 } = Astro.props
 ---
@@ -27,7 +30,11 @@ const {
     <ThemeProvider />
   </head>
 
-  <body class='flex justify-center bg-background text-foreground' {...props}>
+  <body
+    class='flex justify-center bg-background text-foreground'
+    data-editorial={editorial || undefined}
+    {...props}
+  >
     {
       highlightColor && (
         <div

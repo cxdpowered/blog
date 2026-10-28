@@ -1,0 +1,228 @@
+---
+import type { MarkdownHeading } from 'astro'
+
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import { PageInfo } from '@/components/waline'
+import config from '@/site-config'
+
+interface Props {
+  title: string
+  eyebrow?: string
+  description?: string
+  headings?: MarkdownHeading[]
+  view?: boolean
+}
+
+const { title, eyebrow, description, headings = [], view } = Astro.props
+---
+
+<BaseLayout editorial meta={{ title, description }}>
+  <main class='editorial-page' id='page-top'>
+    <header class='page-heading'>
+      {eyebrow && <p class='page-eyebrow'>{eyebrow}</p>}
+      <h1>{title}</h1>
+      <div class='page-intro'><slot name='intro' /></div>
+      {
+        Astro.slots.has('actions') && (
+          <div class='detail-links page-actions'>
+            <slot name='actions' />
+          </div>
+        )
+      }
+    </header>
+
+    {
+      headings.length > 0 && (
+        <nav class='page-sections' aria-label='Page sections'>
+          {headings.map(({ slug, text }) => (
+            <a href={`#${slug}`}>{text}</a>
+          ))}
+        </nav>
+      )
+    }
+
+    <div class='page-content'><slot /></div>
+
+    <footer class='page-footer'>
+      <div class='footer-links'>
+        <a href='/'>← Home</a>
+        <a href='/terms'>Site policies</a>
+        <a href='#page-top'>Back to top ↑</a>
+      </div>
+      <div class='footer-info'>
+        <span>{config.title}</span>
+        {
+          view && (
+            <details>
+              <>
+                <summary>Page info</summary>
+                <PageInfo view />
+              </>
+            </details>
+          )
+        }
+      </div>
+    </footer>
+  </main>
+</BaseLayout>
+
+<style is:global>
+  .editorial-page {
+    max-width: 1040px;
+    margin-inline: auto;
+    padding-bottom: 32px;
+    scroll-margin-top: 100px;
+  }
+  .editorial-page .page-heading {
+    padding: 80px 0 48px;
+  }
+  .editorial-page .page-eyebrow {
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    color: hsl(var(--muted-foreground));
+  }
+  .editorial-page h1 {
+    margin-block: 18px 24px;
+    font-size: 48px;
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.04em;
+    overflow-wrap: anywhere;
+  }
+  .editorial-page .page-intro {
+    max-width: 680px;
+    color: hsl(var(--muted-foreground));
+    font-size: 17px;
+    line-height: 1.9;
+    text-wrap: pretty;
+  }
+  .editorial-page .page-actions {
+    margin-top: 28px;
+  }
+  .editorial-page .page-sections {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 28px;
+    padding-block: 20px;
+    border-block: 1px solid hsl(var(--border) / 0.7);
+    font-size: 12px;
+    line-height: 1.8;
+    color: hsl(var(--muted-foreground));
+  }
+  .editorial-page .detail-section {
+    display: grid;
+    grid-template-columns: 160px minmax(0, 1fr);
+    gap: 40px;
+    padding-block: 48px;
+  }
+  .editorial-page .detail-section + .detail-section {
+    border-top: 1px solid hsl(var(--border) / 0.65);
+  }
+  .editorial-page .detail-section > h2 {
+    padding-top: 5px;
+    color: hsl(var(--muted-foreground));
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.8;
+    scroll-margin-top: 100px;
+  }
+  .editorial-page .section-body {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    color: hsl(var(--article-text));
+    font-size: 16px;
+    line-height: 1.9;
+    overflow-wrap: anywhere;
+  }
+  .editorial-page .section-body strong {
+    font-weight: 600;
+  }
+  .editorial-page .points {
+    margin: 0;
+    padding-left: 1.2em;
+    list-style: disc;
+  }
+  .editorial-page .points li + li {
+    margin-top: 10px;
+  }
+  .editorial-page .points li::marker {
+    color: hsl(var(--muted-foreground));
+  }
+  .editorial-page .detail-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 26px;
+    font-size: 13px;
+    line-height: 1.8;
+  }
+  .editorial-page .detail-links a {
+    text-decoration: underline;
+    text-decoration-color: hsl(var(--border));
+    text-underline-offset: 5px;
+  }
+  .editorial-page .detail-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 20px;
+    color: hsl(var(--muted-foreground));
+    font-size: 11px;
+    line-height: 1.8;
+  }
+  .editorial-page a:hover {
+    color: hsl(var(--primary));
+  }
+  .editorial-page a:focus-visible {
+    outline: 2px solid hsl(var(--primary));
+    outline-offset: 5px;
+  }
+  .editorial-page .page-footer {
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid hsl(var(--border) / 0.65);
+    color: hsl(var(--muted-foreground));
+    font-size: 12px;
+  }
+  .editorial-page .footer-links,
+  .editorial-page .footer-info {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .editorial-page .footer-info {
+    margin-top: 24px;
+  }
+  .editorial-page .footer-info summary {
+    cursor: pointer;
+  }
+  .editorial-page .footer-info details > div {
+    margin-top: 12px;
+  }
+  @media (max-width: 640px) {
+    .editorial-page .page-heading {
+      padding: 48px 0 36px;
+    }
+    .editorial-page h1 {
+      font-size: 38px;
+    }
+    .editorial-page .page-intro {
+      font-size: 15px;
+    }
+    .editorial-page .page-sections {
+      gap: 10px 20px;
+    }
+    .editorial-page .detail-section {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 24px;
+      padding-block: 36px;
+    }
+    .editorial-page .detail-section > h2 {
+      padding-top: 0;
+    }
+    .editorial-page .section-body {
+      font-size: 15px;
+    }
+  }
+</style>

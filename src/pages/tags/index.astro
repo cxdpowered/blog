@@ -1,49 +1,100 @@
 ---
 import { getBlogCollection, getUniqueTagsWithCount } from 'astro-pure/server'
-import { Button } from 'astro-pure/user'
-import { cn } from 'astro-pure/utils'
-import PageLayout from '@/layouts/BaseLayout.astro'
+import PageLayout from '@/layouts/EditorialPage.astro'
 
 const allPosts = await getBlogCollection()
 const allTags = getUniqueTagsWithCount(allPosts)
-
-const meta = {
-  description: "A list of all the topics I've written about in my posts",
-  title: 'All Tags'
-}
+const description = "A list of all the topics I've written about in my posts"
 ---
 
-<PageLayout {meta}>
-  <Button title='Back' href='/blog' variant='back' />
-  <main class='mt-6 lg:mt-10'>
-    <div id='content-header' class='animate'>
-      <h1 class='mb-6 text-3xl font-medium'>Tags</h1>
-    </div>
+<PageLayout title='Tags' eyebrow='Browse by topic' {description}>
+  <Fragment slot='intro'>
+    <p>Follow a topic through the notes, projects, and questions collected here.</p>
+  </Fragment>
+  <Fragment slot='actions'>
+    <a href='/blog'>All posts →</a>
+    <a href='/archives'>Archives ↗</a>
+    <a href='/search'>Search ↗</a>
+  </Fragment>
 
-    <div id='content' class='animate'>
-      {
-        allTags.length > 0 ? (
-          <ul class='flex flex-wrap gap-4'>
-            {allTags.map(([tag, val]) => (
-              <li>
-                <Button
-                  href={`/tags/${tag}`}
-                  variant='pill'
-                  class={cn(
-                    'items-start gap-x-1',
-                    val > 2 ? 'rounded-xl px-3 py-1 text-xl' : val > 1 && 'text-lg'
-                  )}
-                >
-                  {tag}
-                  <span class={val > 2 ? 'text-base' : 'text-xs'}>{val}</span>
-                </Button>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p>Any tag yet.</p>
-        )
-      }
+  <section aria-label='All topics'>
+    <div class='topics-index-heading'>
+      <p>{allTags.length} topics</p>
+      <span>Posts</span>
     </div>
-  </main>
+    {
+      allTags.length > 0 ? (
+        <ul class='topics-index'>
+          {allTags.map(([tag, count]) => (
+            <li>
+              <a href={`/tags/${encodeURIComponent(tag)}`}>
+                <span class='topic-name'>{tag}</span>
+                <span class='topic-count'>
+                  {count}
+                  <span class='sr-only'> post{count === 1 ? '' : 's'}</span>
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p class='empty-state'>No topics yet.</p>
+      )
+    }
+  </section>
 </PageLayout>
+
+<style>
+  .topics-index-heading {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid hsl(var(--border));
+    color: hsl(var(--muted-foreground));
+    font-size: 12px;
+  }
+  .topics-index {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 56px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .topics-index a {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: baseline;
+    gap: 20px;
+    padding-block: 23px;
+    border-bottom: 1px solid hsl(var(--border) / 0.6);
+  }
+  .topic-name {
+    font-size: 20px;
+    line-height: 1.5;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    overflow-wrap: anywhere;
+  }
+  .topic-count {
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+    color: hsl(var(--muted-foreground));
+  }
+  .empty-state {
+    padding-block: 36px;
+    color: hsl(var(--muted-foreground));
+  }
+  @media (max-width: 640px) {
+    .topics-index {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .topics-index a {
+      padding-block: 20px;
+    }
+    .topic-name {
+      font-size: 18px;
+    }
+  }
+</style>

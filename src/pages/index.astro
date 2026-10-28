@@ -1,10 +1,8 @@
 ---
-import { Image } from 'astro:assets'
-
-import { PostPreview } from 'astro-pure/components/pages'
 import { getBlogCollection, sortMDByDate } from 'astro-pure/server'
-import { Button, Card, Icon, Label } from 'astro-pure/user'
 import PageLayout from '@/layouts/BaseLayout.astro'
+import EditorialPostItem from '@/components/EditorialPostItem.astro'
+import HomeEntry from '@/components/home/HomeEntry.astro'
 import Section from '@/components/home/Section.astro'
 import SkillLayout from '@/components/home/SkillLayout.astro'
 import config from '@/site-config'
@@ -28,73 +26,65 @@ const skillGroups = [
   }
 ]
 
-const MAX_POSTS = 10
+const MAX_POSTS = 4
 const allPosts = await getBlogCollection()
 const allPostsByDate = sortMDByDate(allPosts).slice(0, MAX_POSTS)
-
-const imagePath = config.logo.src
-const images = import.meta.glob<{ default: ImageMetadata }>(
-  '/src/assets/*.{jpeg,jpg,png,gif,avif,webp}'
-)
-if (!images[imagePath])
-  throw new Error(
-    `"${imagePath}" does not exist in glob: "src/assets/*.{jpeg,jpg,png,gif,avif,webp}"`
-  )
 ---
 
-<PageLayout meta={{ title: 'Home' }} highlightColor='#659EB9'>
-  <main class='flex w-full flex-col items-center'>
-    <section
-      class='animate mb-10 flex flex-col items-center gap-y-7 text-center'
-      id='content-header'
-    >
-      <Image
-        src={images[imagePath]()}
+<PageLayout editorial meta={{ title: 'Home' }}>
+  <main class='home-page' id='home-top'>
+    <header class='home-intro'>
+      <div class='home-intro-copy'>
+        <p class='home-eyebrow'>{config.author} <span aria-hidden='true'>/</span> Personal notes</p>
+        <h1>{config.title}</h1>
+        <p class='home-description'>
+          这里会放技术折腾、成长记录和一些还没想明白但值得写下来的问题。最近主要在玩 LLM / Agent /
+          RAG，也会记录多模态检索、Linux、Astro 博客和 AI 工具链里的坑。
+        </p>
+        <div class='home-actions'>
+          <a class='text-link home-primary' href='/blog'
+            >Read posts <span aria-hidden='true'>↗</span></a
+          >
+          <a class='text-link' href='/about'>About me <span aria-hidden='true'>→</span></a>
+        </div>
+        <div class='home-contact'>
+          <span>武汉</span>
+          <a href='https://github.com/cxdpowered' target='_blank' rel='noopener noreferrer'
+            >cxdpowered ↗</a
+          >
+          <a href='mailto:1293909048@qq.com'>1293909048@qq.com</a>
+        </div>
+      </div>
+      <img
+        src={config.logo.src}
+        width={120}
+        height={120}
         alt={config.logo.alt || 'Profile'}
-        class='h-28 w-28 rounded-3xl border bg-background p-1 shadow-sm'
+        class='home-portrait'
         loading='eager'
         fetchpriority='high'
       />
+    </header>
 
-      <div class='flex flex-col items-center gap-y-4'>
-        <div class='flex flex-col items-center gap-y-2'>
-          <p
-            class='inline-flex items-center gap-x-2 rounded-full border bg-muted px-3 py-1 text-sm font-medium text-muted-foreground'
-          >
-            <span class='relative flex size-2'>
-              <span
-                class='absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75'
-              ></span>
-              <span class='relative inline-flex size-2 rounded-full bg-green-500'></span>
-            </span>
-            I am alive
-          </p>
-          <h1 class='text-3xl font-medium sm:text-4xl'>{config.title}</h1>
-          <p class='max-w-2xl text-muted-foreground'>
-            这里会放技术折腾、成长记录和一些还没想明白但值得写下来的问题。最近主要在玩 LLM / Agent /
-            RAG，也会记录多模态检索、Linux、Astro 博客和 AI 工具链里的坑。
-          </p>
-        </div>
-        <div class='flex flex-wrap justify-center gap-x-7 gap-y-3'>
-          <Label title='武汉'>
-            <Icon name='location' class='size-5' slot='icon' />
-          </Label>
-          <Label title='cxdpowered' as='a' href='https://github.com/cxdpowered' target='_blank'>
-            <Icon name='github' class='size-5' slot='icon' />
-          </Label>
-          <Label title='1293909048@qq.com' as='a' href='mailto:1293909048@qq.com'>
-            <Icon name='email' class='size-5' slot='icon' />
-          </Label>
-        </div>
-      </div>
+    {
+      allPostsByDate.length > 0 && (
+        <section class='home-writing' aria-labelledby='latest-posts'>
+          <div class='home-section-heading'>
+            <h2 id='latest-posts'>Latest writing</h2>
+            <a class='text-link' href='/blog'>
+              All posts <span aria-hidden='true'>→</span>
+            </a>
+          </div>
+          <ul>
+            {allPostsByDate.map((post) => (
+              <EditorialPostItem {post} compact />
+            ))}
+          </ul>
+        </section>
+      )
+    }
 
-      <div class='flex flex-wrap justify-center gap-3'>
-        <Button title='Read posts' href='/blog' variant='ahead' />
-        <Button title='About me' href='/about' variant='ahead' />
-      </div>
-    </section>
-
-    <div id='content' class='animate flex flex-col gap-y-10 md:w-4/5 lg:w-5/6'>
+    <div class='home-details'>
       <Section title='Profile'>
         <p class='text-muted-foreground'>
           比起只把结果贴出来，我更想记录过程：为什么这样选型，哪里踩坑，哪些想法后来被推翻。
@@ -105,12 +95,12 @@ if (!images[imagePath])
       </Section>
 
       <Section title='Now'>
-        <div class='grid grid-cols-1 gap-3 sm:grid-cols-2'>
-          <Card
+        <div class='home-now'>
+          <HomeEntry
             heading='LLM Agent 工程'
             subheading='function calling 工具循环、长期记忆、MCP 工具化、多平台 IM 接入'
           />
-          <Card
+          <HomeEntry
             heading='多模态检索研究'
             subheading='ALBEF、弱监督跨模态对齐、PyTorch / DDP 训练与复现'
           />
@@ -118,7 +108,7 @@ if (!images[imagePath])
       </Section>
 
       <Section title='Projects'>
-        <Card
+        <HomeEntry
           heading='小青团 · xiaoqingtuan'
           subheading='面向 QQ / 微信的个人任务型 LLM Agent 助手'
           date='2026.05 - 至今'
@@ -128,8 +118,8 @@ if (!images[imagePath])
             工具循环，闲聊和真正「办事」走同一条路径；Wiki-first 长期记忆配 BM25 +
             语义混合检索，还能调用外部 MCP 服务（如下方图书馆选座）。
           </p>
-        </Card>
-        <Card
+        </HomeEntry>
+        <HomeEntry
           heading='mcp-ccnu-lib'
           subheading='把华师图书馆选座系统封装成模型可调用的 MCP 工具'
           date='2026.06'
@@ -138,8 +128,8 @@ if (!images[imagePath])
             覆盖登录、查座、预约、取消全流程，基于 Playwright
             维持持久会话；验证码用「挂起返回」交回用户输入，不阻塞流程，决策与调度交给小青团。
           </p>
-        </Card>
-        <Card
+        </HomeEntry>
+        <HomeEntry
           heading='个人知识发布 Agent'
           subheading='基于 Dify 的知识沉淀与技术内容发布闭环'
           date='2026.04 - 至今'
@@ -148,36 +138,20 @@ if (!images[imagePath])
             把对话片段、笔记等碎片沉淀为长期记忆，经 RAG 召回生成博客草稿，再接 MCP 发布工具链完成
             frontmatter 校验、死链检查到 Astro / Vercel 部署的发布闭环。
           </p>
-        </Card>
-        <Button
-          title='More project details'
-          class='w-fit self-end'
-          href='/projects'
-          variant='ahead'
-        />
-      </Section>
-
-      <Section title='Education'>
-        <Card
-          heading='华中师范大学 | 计算机学院'
-          subheading='专业硕士研究生，视觉-文本跨模态方向'
-          date='2024.09 - 2027.06（预计）'
-        />
-        <Card
-          heading='湖北经济学院 | 物流工程'
-          subheading='工学学士，本科后有一年配送业务一线执行经历'
-          date='2017.09 - 2021.06'
-        />
+        </HomeEntry>
+        <a class='text-link' href='/projects'
+          >More project details <span aria-hidden='true'>→</span></a
+        >
       </Section>
 
       <Section title='Practice'>
-        <Card heading='多模态情感计算小组' subheading='服务器运维与研发支持' date='研究生阶段'>
+        <HomeEntry heading='多模态情感计算小组' subheading='服务器运维与研发支持' date='研究生阶段'>
           <p class='text-muted-foreground'>
             负责训练服务器组装、Linux / CUDA 环境配置、VPN 与权限维护，并用 Shell
             脚本处理环境初始化、日志清理和结果归档。
           </p>
-        </Card>
-        <Card
+        </HomeEntry>
+        <HomeEntry
           heading='WPS 菁英工程师培养计划'
           subheading='C++ / Qt 方向，8 周结业认证'
           date='2026.03 - 2026.05'
@@ -187,21 +161,189 @@ if (!images[imagePath])
       <Section title='Skills'>
         {skillGroups.map((group) => <SkillLayout title={group.title} skills={group.skills} />)}
       </Section>
-
-      {
-        allPostsByDate.length > 0 && (
-          <Section title='Posts'>
-            <ul class='flex flex-col gap-y-1.5 sm:gap-y-2'>
-              {allPostsByDate.map((p) => (
-                <li class='flex flex-col gap-x-2 sm:flex-row'>
-                  <PostPreview post={p} />
-                </li>
-              ))}
-            </ul>
-            <Button title='More posts' class='w-fit self-end' href='/blog' variant='ahead' />
-          </Section>
-        )
-      }
     </div>
+    <footer class='home-footer'>
+      <span>© {new Date().getFullYear()} {config.author}</span>
+      <nav aria-label='More from this blog'>
+        <a href='/archives'>Archives</a>
+        <a href='/rss.xml'>RSS</a>
+        <a href='/terms'>Site policies</a>
+        <a href='#home-top'>Back to top ↑</a>
+      </nav>
+    </footer>
   </main>
 </PageLayout>
+
+<style>
+  .home-page {
+    max-width: 1040px;
+    margin-inline: auto;
+    padding-bottom: 32px;
+  }
+  .home-intro {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 120px;
+    gap: 80px;
+    padding: 80px 0 64px;
+    align-items: start;
+  }
+  .home-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 12px;
+    color: hsl(var(--muted-foreground));
+  }
+  h1 {
+    margin: 22px 0 24px;
+    font-size: clamp(40px, 5.5vw, 64px);
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.045em;
+  }
+  .home-description {
+    max-width: 680px;
+    font-size: 19px;
+    line-height: 1.9;
+    color: hsl(var(--muted-foreground));
+    text-wrap: pretty;
+  }
+  .home-portrait {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    margin-top: 42px;
+  }
+  :global(.dark) .home-portrait {
+    filter: brightness(0) invert(0.9);
+  }
+  .home-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 28px;
+    align-items: center;
+    margin-top: 30px;
+    font-size: 14px;
+  }
+  .text-link {
+    width: fit-content;
+    color: hsl(var(--foreground));
+    text-decoration: underline;
+    text-decoration-color: hsl(var(--border));
+    text-underline-offset: 6px;
+    font-size: 13px;
+  }
+  .text-link span {
+    display: inline-block;
+    margin-left: 8px;
+  }
+  .text-link:hover {
+    color: hsl(var(--primary));
+    text-decoration-color: currentColor;
+  }
+  .home-primary {
+    font-weight: 500;
+    font-size: 14px;
+  }
+  .home-contact {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 22px;
+    margin-top: 34px;
+    font-size: 12px;
+    color: hsl(var(--muted-foreground));
+  }
+  .home-section-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 20px;
+    padding-bottom: 20px;
+  }
+  .home-section-heading h2 {
+    font-size: 24px;
+    font-weight: 500;
+    letter-spacing: -0.025em;
+  }
+  .home-writing {
+    padding-bottom: 56px;
+  }
+  .home-writing ul {
+    border-top: 1px solid hsl(var(--border));
+  }
+  .home-details {
+    font-size: 16px;
+    line-height: 1.9;
+  }
+  .home-now {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 32px;
+  }
+  .home-now :global(.home-entry + .home-entry) {
+    border: 0;
+    padding-top: 0;
+  }
+  .home-footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    border-top: 1px solid hsl(var(--border));
+    padding-top: 24px;
+    margin-top: 24px;
+    font-size: 12px;
+    color: hsl(var(--muted-foreground));
+  }
+  .home-footer nav {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  @media (max-width: 720px) {
+    .home-intro {
+      grid-template-columns: minmax(0, 1fr) 64px;
+      gap: 24px;
+      padding: 48px 0;
+    }
+    .home-intro-copy {
+      display: contents;
+    }
+    .home-eyebrow {
+      grid-column: 1;
+      grid-row: 1;
+      align-self: end;
+    }
+    h1 {
+      grid-column: 1;
+      grid-row: 2;
+      margin: 0;
+    }
+    .home-portrait {
+      width: 64px;
+      height: 64px;
+      margin-top: 0;
+      grid-column: 2;
+      grid-row: 1 / 3;
+      align-self: center;
+    }
+    .home-description,
+    .home-actions,
+    .home-contact {
+      grid-column: 1 / -1;
+      margin-top: 0;
+    }
+    .home-description {
+      font-size: 17px;
+    }
+    .home-section-heading h2 {
+      font-size: 22px;
+    }
+    .home-now {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 24px;
+    }
+    .home-footer {
+      flex-direction: column;
+    }
+  }
+</style>

@@ -1,15 +1,20 @@
 ---
 import type { MarkdownHeading } from 'astro'
+import { Image } from 'astro:assets'
 import type { CollectionEntry } from 'astro:content'
 
-// Plugin styles
 import 'katex/dist/katex.min.css'
 
-import { MediumZoom } from 'astro-pure/advanced'
-import { ArticleBottom, Copyright, Hero, TOC } from 'astro-pure/components/pages'
 import config from 'virtual:config'
-import PageLayout from '@/layouts/ContentLayout.astro'
+
+import { MediumZoom } from 'astro-pure/advanced'
+import { ArticleBottom, Copyright } from 'astro-pure/components/pages'
+import { FormattedDate } from 'astro-pure/user'
+import PageLayout from '@/layouts/BaseLayout.astro'
+import ArticleTOC from '@/components/ArticleTOC.astro'
 import { Comment, PageInfo } from '@/components/waline'
+
+import '@/assets/styles/article.css'
 
 interface Props {
   post: CollectionEntry<'blog'>
@@ -24,51 +29,101 @@ const {
   headings,
   remarkPluginFrontmatter
 } = Astro.props
-
-const {
-  description,
-  heroImage,
-  publishDate,
-  title,
-  updatedDate,
-  draft: isDraft,
-  comment: enableComment
-} = data
-
+const { title, description, heroImage, publishDate, updatedDate, tags, language, draft, comment } =
+  data
 const socialImage = heroImage
   ? typeof heroImage.src === 'string'
     ? heroImage.src
     : heroImage.src.src
   : config.socialCard
 const articleDate = updatedDate?.toISOString() ?? publishDate.toISOString()
-const primaryColor = data.heroImage?.color ?? 'hsl(var(--primary) / var(--un-text-opacity))'
 ---
 
-<PageLayout
-  meta={{ articleDate, description, ogImage: socialImage, title }}
-  highlightColor={primaryColor}
-  back='/blog'
->
-  {!!headings.length && <TOC {headings} slot='sidebar' />}
-
-  <Hero {data} {remarkPluginFrontmatter} slot='header'>
-    <Fragment slot='description'>
-      {!isDraft && enableComment && <PageInfo comment class='mt-1' />}
-    </Fragment>
-  </Hero>
-
-  <slot />
-
-  <Fragment slot='bottom'>
-    {/* Copyright */}
-    <Copyright {data} />
-    {/* Article recommend */}
-    <ArticleBottom collections={posts} {id} class='mt-3 sm:mt-6' />
-    { /* Comment */
-    !isDraft && enableComment && <Comment class='mt-3 sm:mt-6' />}
-  </Fragment>
-
-  <slot name='bottom-sidebar' slot='bottom-sidebar' />
+<PageLayout editorial meta={{ articleDate, description, ogImage: socialImage, title }}>
+  <main id='article-top' class='article-shell'>
+    <article data-pagefind-body>
+      <header id='content-header' class='article-header'>
+        <div class='article-eyebrow'>
+          <a href='/blog'>Blog</a><span aria-hidden='true'>/</span>
+          <FormattedDate date={publishDate} />
+          {draft && <span class='article-draft'>Draft</span>}
+        </div>
+        <h1 data-pagefind-meta='title'>{title}</h1>
+        <p class='article-description'>{description}</p>
+        <div class='article-byline'>
+          <span>{config.author}</span>
+          <span aria-hidden='true'>·</span>
+          <span>{remarkPluginFrontmatter.minutesRead}</span>
+          {
+            language && (
+              <>
+                <>
+                  <span aria-hidden='true'>·</span>
+                  <span>{language}</span>
+                </>
+              </>
+            )
+          }
+        </div>
+      </header>
+      {
+        heroImage && (
+          <figure class='article-cover'>
+            <Image
+              {...heroImage}
+              alt={heroImage.alt || title}
+              loading='eager'
+              fetchpriority='high'
+            />
+          </figure>
+        )
+      }
+      <div class='article-layout'>
+        {!!headings.length && <ArticleTOC {headings} />}
+        <div id='content' class='article-prose prose'><slot /></div>
+      </div>
+      <div class='article-end-meta'>
+        <div class='article-tags'>
+          {
+            tags.map((tag) => (
+              <a href={`/tags/${encodeURIComponent(tag)}`} data-pagefind-filter='tag'>
+                {tag}
+              </a>
+            ))
+          }
+        </div>
+        {
+          updatedDate && (
+            <span>
+              Updated <FormattedDate date={updatedDate} />
+            </span>
+          )
+        }
+      </div>
+    </article>
+    <footer class='article-end'>
+      <details class='article-sharing'>
+        <summary>Article info & share <span aria-hidden='true'>+</span></summary>
+        <Copyright {data} class='article-copyright' />
+        {!draft && comment && <PageInfo comment />}
+      </details>
+      <div class='article-next'><ArticleBottom collections={posts} {id} /></div>
+      {
+        !draft && comment && (
+          <section class='article-comments' aria-label='Comments'>
+            <Comment />
+          </section>
+        )
+      }
+      <slot name='bottom' />
+      <slot name='bottom-sidebar' />
+      <div class='article-colophon'>
+        <a href='/blog'>← All posts</a>
+        <a href='/terms'>Site policies</a>
+        <a href='#article-top'>Back to top ↑</a>
+      </div>
+    </footer>
+  </main>
 </PageLayout>
 
 {config.integ.mediumZoom.enable && <MediumZoom />}

@@ -1,0 +1,74 @@
+---
+import type { MarkdownHeading } from 'astro'
+
+interface Props {
+  headings: MarkdownHeading[]
+}
+const headings = Astro.props.headings.filter(({ depth }) => depth === 2 || depth === 3)
+---
+
+{
+  headings.length > 0 && (
+    <aside class='article-toc' data-pagefind-ignore>
+      <details class='article-toc-mobile'>
+        <summary>
+          On this page <span aria-hidden='true'>+</span>
+        </summary>
+        <nav aria-label='Article sections'>
+          {headings.map(({ slug, text, depth }) => (
+            <a href={`#${slug}`} class:list={{ 'toc-subheading': depth === 3 }}>
+              {text.replace(/#$/, '')}
+            </a>
+          ))}
+        </nav>
+      </details>
+      <nav class='article-toc-desktop' aria-label='Article sections'>
+        <p>On this page</p>
+        {headings.map(({ slug, text, depth }) => (
+          <a href={`#${slug}`} class:list={{ 'toc-subheading': depth === 3 }}>
+            {text.replace(/#$/, '')}
+          </a>
+        ))}
+        <a href='#article-top' class='toc-top'>
+          Back to top ↑
+        </a>
+      </nav>
+    </aside>
+  )
+}
+
+<script>
+  const toc = document.querySelector('.article-toc')
+  const headings = Array.from(document.querySelectorAll<HTMLElement>('#content h2, #content h3'))
+  const links = Array.from(toc?.querySelectorAll<HTMLAnchorElement>('a:not(.toc-top)') ?? [])
+  const mobile = toc?.querySelector('details')
+  links.forEach((link) => link.addEventListener('click', () => mobile?.removeAttribute('open')))
+  function updateCurrentSection() {
+    let current = headings[0]
+    for (const heading of headings) {
+      if (heading.getBoundingClientRect().top > 150) break
+      current = heading
+    }
+    links.forEach((link) => {
+      if (link.getAttribute('href') === `#${current?.id}`)
+        link.setAttribute('aria-current', 'location')
+      else link.removeAttribute('aria-current')
+    })
+  }
+  if (toc) {
+    let scheduled = false
+    window.addEventListener(
+      'scroll',
+      () => {
+        if (scheduled) return
+        scheduled = true
+        requestAnimationFrame(() => {
+          updateCurrentSection()
+          scheduled = false
+        })
+      },
+      { passive: true }
+    )
+    updateCurrentSection()
+  }
+</script>

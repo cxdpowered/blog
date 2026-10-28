@@ -1,52 +1,147 @@
 ---
-import { PostPreview } from 'astro-pure/components/pages'
 import { getBlogCollection, groupCollectionsByYear, sortMDByDate } from 'astro-pure/server'
-import { Button } from 'astro-pure/user'
-import PageLayout from '@/layouts/BaseLayout.astro'
+import PageLayout from '@/layouts/EditorialPage.astro'
 
 export const prerender = true
 
 const allPosts = await getBlogCollection()
 const allPostsByDate = sortMDByDate(allPosts)
 const allPostsByYear = groupCollectionsByYear(allPostsByDate)
-
-const meta = {
-  description: 'A list of all the years of creating my posts',
-  title: 'Archives'
-}
+const description = 'A list of all the years of creating my posts'
+const formatDate = (date: Date) =>
+  new Intl.DateTimeFormat('en', {
+    month: 'short',
+    day: 'numeric'
+  }).format(date)
 ---
 
-<PageLayout {meta}>
-  <Button title='Back' href='/blog' variant='back' />
+<PageLayout title='Archives' eyebrow='Through the years' {description}>
+  <Fragment slot='intro'>
+    <p>All {allPosts.length} post{allPosts.length === 1 ? '' : 's'}, arranged by year.</p>
+  </Fragment>
+  <Fragment slot='actions'>
+    <a href='/blog'>All posts →</a>
+    <a href='/tags'>Topics ↗</a>
+    <a href='/search'>Search ↗</a>
+  </Fragment>
 
-  <main class='mt-6 lg:mt-10'>
-    <div id='content-header' class='animate'>
-      <h1 class='mb-6 text-3xl font-medium'>Archives</h1>
-    </div>
-
-    {allPosts.length === 0 && <p>No posts yet.</p>}
-
-    <section id='content' class='animate' aria-label='Blog post list'>
-      {
-        allPostsByYear.map(([year, posts]) => (
-          <div class='relative mt-20'>
-            <h2
-              class='absolute -start-6 -top-16 z-0 text-9xl font-bold text-transparent opacity-12 dark:opacity-25'
-              style='-webkit-text-stroke-width:2px;-webkit-text-stroke-color:hsl(var(--foreground)/var(--un-text-opacity))'
-            >
-              <samp>{year}</samp>
-            </h2>
-            <p class='px-5 text-muted-foreground'>
-              {posts.length} post{posts.length > 1 && 's'}
+  {allPosts.length === 0 && <p class='empty-state'>No posts yet.</p>}
+  <div class='archive-groups'>
+    {
+      allPostsByYear.map(([year, posts]) => (
+        <section class='archive-year' aria-labelledby={`year-${year}`}>
+          <header class='archive-year-heading'>
+            <h2 id={`year-${year}`}>{year}</h2>
+            <p>
+              {posts.length} post{posts.length === 1 ? '' : 's'}
             </p>
-            <ul class='flex flex-col text-start'>
-              {posts.map((p) => (
-                <PostPreview post={p} class='border-0 bg-transparent py-2' />
-              ))}
-            </ul>
-          </div>
-        ))
-      }
-    </section>
-  </main>
+          </header>
+          <ul class='archive-posts'>
+            {posts.map((post) => {
+              const postDate = post.data.updatedDate ?? post.data.publishDate
+              return (
+                <li>
+                  <time datetime={postDate.toISOString()}>{formatDate(postDate)}</time>
+                  <a href={`/blog/${post.id}`} data-astro-prefetch>
+                    {post.data.draft && <span class='draft-label'>Draft · </span>}
+                    {post.data.title}
+                  </a>
+                </li>
+              )
+            })}
+          </ul>
+        </section>
+      ))
+    }
+  </div>
 </PageLayout>
+
+<style>
+  .archive-groups {
+    border-top: 1px solid hsl(var(--border));
+  }
+  .archive-year {
+    display: grid;
+    grid-template-columns: 160px minmax(0, 1fr);
+    gap: 40px;
+    padding-block: 36px;
+  }
+  .archive-year + .archive-year {
+    border-top: 1px solid hsl(var(--border));
+  }
+  .archive-year-heading h2 {
+    font-size: 25px;
+    line-height: 1.4;
+    font-weight: 500;
+    letter-spacing: -0.03em;
+    scroll-margin-top: 100px;
+  }
+  .archive-year-heading p {
+    margin-top: 8px;
+    font-size: 12px;
+    color: hsl(var(--muted-foreground));
+  }
+  .archive-posts {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .archive-posts li {
+    display: grid;
+    grid-template-columns: 70px minmax(0, 1fr);
+    align-items: baseline;
+    gap: 24px;
+    padding-block: 20px;
+    border-bottom: 1px solid hsl(var(--border) / 0.55);
+  }
+  .archive-posts li:first-child {
+    padding-top: 5px;
+  }
+  .archive-posts li:last-child {
+    border-bottom: 0;
+    padding-bottom: 0;
+  }
+  .archive-posts time {
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+    color: hsl(var(--muted-foreground));
+  }
+  .archive-posts a {
+    font-size: 17px;
+    line-height: 1.75;
+    overflow-wrap: anywhere;
+  }
+  .draft-label {
+    color: hsl(var(--primary));
+    font-size: 12px;
+  }
+  .empty-state {
+    padding-block: 24px;
+    color: hsl(var(--muted-foreground));
+  }
+  @media (max-width: 760px) {
+    .archive-year {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 24px;
+      padding-block: 28px;
+    }
+    .archive-year-heading {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .archive-year-heading p {
+      margin-top: 0;
+    }
+  }
+  @media (max-width: 400px) {
+    .archive-posts li {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 6px;
+    }
+    .archive-posts a {
+      font-size: 16px;
+    }
+  }
+</style>

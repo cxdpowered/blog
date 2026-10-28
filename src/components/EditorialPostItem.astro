@@ -1,0 +1,182 @@
+---
+import { Image } from 'astro:assets'
+import type { CollectionEntry } from 'astro:content'
+
+interface Props {
+  post: CollectionEntry<'blog'>
+  compact?: boolean
+}
+
+const { post, compact = false } = Astro.props
+const { title, description, tags, heroImage, draft, publishDate, updatedDate } = post.data
+const postDate = updatedDate ?? publishDate
+const dateLabel = new Intl.DateTimeFormat('en', {
+  month: 'short',
+  day: 'numeric',
+  year: 'numeric'
+}).format(postDate)
+const href = `/blog/${post.id}`
+---
+
+<li class:list={['editorial-post', { compact }]}>
+  <div class='post-date'>
+    <time datetime={postDate.toISOString()}>{dateLabel}</time>
+    {draft && <span class='post-draft'>Draft</span>}
+  </div>
+  <div class:list={['post-body', { 'has-cover': heroImage }]}>
+    <div class='post-copy'>
+      <h2><a href={href} data-astro-prefetch>{title}</a></h2>
+      <p>{description}</p>
+      {
+        tags.length > 0 && (
+          <ul class='post-tags' aria-label='Post topics'>
+            {tags.map((tag) => (
+              <li>
+                <a href={`/tags/${encodeURIComponent(tag)}`}>{tag}</a>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+    </div>
+    {
+      heroImage && (
+        <a class='post-cover' href={href} aria-label={`Read ${title}`} tabindex='-1'>
+          <Image {...heroImage} alt={heroImage.alt || title} loading='lazy' />
+        </a>
+      )
+    }
+  </div>
+</li>
+
+<style>
+  .editorial-post {
+    display: grid;
+    grid-template-columns: 128px minmax(0, 1fr);
+    gap: 32px;
+    padding-block: 36px;
+    border-bottom: 1px solid hsl(var(--border) / 0.65);
+  }
+  .post-date {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-top: 7px;
+    color: hsl(var(--muted-foreground));
+    font-size: 12px;
+    line-height: 1.6;
+    font-variant-numeric: tabular-nums;
+  }
+  .post-draft {
+    color: hsl(var(--primary));
+  }
+  .post-body {
+    min-width: 0;
+  }
+  .post-body.has-cover {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 144px;
+    gap: 32px;
+    align-items: start;
+  }
+  .post-copy {
+    min-width: 0;
+  }
+  h2 {
+    margin: 0;
+    color: hsl(var(--foreground));
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 1.55;
+    letter-spacing: -0.025em;
+    text-wrap: pretty;
+    overflow-wrap: anywhere;
+  }
+  h2 a {
+    text-decoration: none;
+  }
+  h2 a:hover {
+    color: hsl(var(--primary));
+  }
+  .post-copy > p {
+    max-width: 720px;
+    margin-top: 12px;
+    color: hsl(var(--muted-foreground));
+    font-size: 15px;
+    line-height: 1.85;
+    overflow-wrap: anywhere;
+  }
+  .post-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 18px;
+    margin-top: 18px;
+    padding: 0;
+    list-style: none;
+    color: hsl(var(--muted-foreground));
+    font-size: 11px;
+    line-height: 1.7;
+  }
+  .post-tags a {
+    text-decoration: underline;
+    text-decoration-color: hsl(var(--border));
+    text-underline-offset: 4px;
+  }
+  .post-tags a:hover {
+    color: hsl(var(--primary));
+    text-decoration-color: currentColor;
+  }
+  .post-cover {
+    display: block;
+    margin-top: 5px;
+  }
+  .post-cover img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: 2px;
+  }
+  .compact {
+    padding-block: 28px;
+  }
+  .compact h2 {
+    font-size: 22px;
+  }
+  .compact .post-copy > p {
+    font-size: 14px;
+  }
+  @media (max-width: 760px) {
+    .editorial-post {
+      grid-template-columns: 1fr;
+      gap: 12px;
+      padding-block: 28px;
+    }
+    .post-date {
+      flex-direction: row;
+      gap: 12px;
+      padding-top: 0;
+    }
+    h2,
+    .compact h2 {
+      font-size: 21px;
+    }
+    .post-body.has-cover {
+      grid-template-columns: minmax(0, 1fr) 100px;
+      gap: 20px;
+    }
+    .post-copy > p {
+      font-size: 14px;
+    }
+  }
+  @media (max-width: 480px) {
+    .post-body.has-cover {
+      grid-template-columns: 1fr;
+    }
+    .post-cover {
+      max-width: 240px;
+      margin-top: 0;
+    }
+  }
+</style>

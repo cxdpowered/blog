@@ -1,0 +1,64 @@
+---
+interface Props {
+  heading: string
+  subheading?: string
+  date?: string
+}
+const { heading, subheading, date } = Astro.props
+---
+
+<div class='home-entry'>
+  <div class='entry-heading'>
+    <h3>{heading}</h3>
+    {date && <span>{date}</span>}
+  </div>
+  {subheading && <p class='entry-subheading'>{subheading}</p>}
+  {
+    Astro.slots.has('default') && (
+      <div class='entry-body'>
+        <slot />
+      </div>
+    )
+  }
+</div>
+
+<style>
+  .home-entry + .home-entry {
+    border-top: 1px solid hsl(var(--border) / 0.5);
+    padding-top: 24px;
+  }
+  .entry-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  h3 {
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 1.5;
+    letter-spacing: -0.02em;
+  }
+  .entry-heading span {
+    font-size: 12px;
+    color: hsl(var(--muted-foreground));
+    white-space: nowrap;
+  }
+  .entry-subheading {
+    margin-top: 8px;
+    font-size: 14px;
+    line-height: 1.8;
+    color: hsl(var(--muted-foreground));
+  }
+  .entry-body {
+    margin-top: 12px;
+    font-size: 15px;
+    line-height: 1.9;
+  }
+  @media (max-width: 640px) {
+    h3 {
+      font-size: 18px;
+    }
+  }
+</style>

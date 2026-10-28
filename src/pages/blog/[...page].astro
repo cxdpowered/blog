@@ -2,10 +2,9 @@
 import type { GetStaticPaths, Page } from 'astro'
 import type { CollectionEntry } from 'astro:content'
 
-import { Paginator, PostPreview } from 'astro-pure/components/pages'
 import { getBlogCollection, getUniqueTagsWithCount, sortMDByDate } from 'astro-pure/server'
-import { Button, Icon } from 'astro-pure/user'
 import PageLayout from '@/layouts/BaseLayout.astro'
+import EditorialPostItem from '@/components/EditorialPostItem.astro'
 import config from '@/site-config'
 
 export const prerender = true
@@ -27,84 +26,216 @@ interface Props {
 }
 
 const { page, uniqueTags, collectionsCount } = Astro.props
-
 const meta = {
-  description: 'Some posts or archives of my blog',
+  description: 'Notes on technology, projects, and the things learned along the way.',
   title: 'Blog'
-}
-
-const paginationProps = {
-  ...(page.url.prev && {
-    prevUrl: {
-      text: `← Previous Posts`,
-      url: page.url.prev
-    }
-  }),
-  ...(page.url.next && {
-    nextUrl: {
-      text: `Next Posts →`,
-      url: page.url.next
-    }
-  })
 }
 ---
 
-<PageLayout {meta}>
-  <Button title='Back' href='/' variant='back' />
-  <main class='mt-6 lg:mt-10'>
-    <div id='content-header' class='animate'>
-      <h1 class='mb-6 mt-6 text-3xl font-medium sm:mt-10'>Blog</h1>
-    </div>
-    {
-      page.data.length === 0 ? (
-        <p>No posts yet.</p>
-      ) : (
-        <div class='grid gap-y-16 sm:grid-cols-[3fr_1fr] sm:gap-x-8'>
-          <section aria-label='Blog posts list' class='animate' id='content'>
-            {/* header */}
-            <div class='mb-3 flex flex-col justify-between text-sm sm:mb-5 sm:flex-row'>
-              <span class='text-muted-foreground'>
-                Page {page.currentPage} - Showing {page.data.length} of {collectionsCount} posts
-              </span>
-              <a aria-label='View all blog by years' href='/archives' data-astro-prefetch>
-                View all posts by years →
-              </a>
-            </div>
-            {/* posts */}
-            <ul class='flex flex-col gap-y-4 text-start'>
-              {page.data.map((post) => (
-                <PostPreview {post} detailed />
-              ))}
-            </ul>
-            <Paginator {...paginationProps} />
-          </section>
+<PageLayout editorial {meta}>
+  <main class='blog-index'>
+    <header class='blog-heading'>
+      <p class='eyebrow'>Writing</p>
+      <h1>Blog</h1>
+      <p class='intro'>Notes on technology, projects, and the things learned along the way.</p>
+      <nav class='blog-shortcuts' aria-label='Explore the blog'>
+        <a href='/archives'>Archives ↗</a>
+        <a href='/search'>Search ↗</a>
+      </nav>
+    </header>
 
-          {/* sidebar */}
-          {!!uniqueTags.length && (
-            <aside class='animate' id='sidebar'>
-              <h2 class='mb-4 flex items-center text-lg font-medium'>
-                <Icon name='tag-2' class='me-2' />
-                Tags
-              </h2>
-              <ul class='text-bgColor flex flex-wrap gap-2'>
-                {
-                  // Only show top 50 tags in sidebar
-                  uniqueTags.slice(0, 50).map((tag) => (
-                    <li>
-                      <Button title={tag} href={`/tags/${tag}`} variant='pill' />
-                    </li>
-                  ))
-                }
-              </ul>
-              <span class='mt-4 block sm:text-end'>
-                <a aria-label='View all blog categories' href='/tags' data-astro-prefetch>
-                  View all →
-                </a>
-              </span>
-            </aside>
-          )}
-        </div>
+    <section aria-label='Blog posts'>
+      <div class='list-heading'>
+        <p>{collectionsCount} posts <span aria-hidden='true'>/</span> Newest first</p>
+        <p>Page {page.currentPage} of {page.lastPage}</p>
+      </div>
+      {
+        page.data.length === 0 ? (
+          <p class='empty-state'>No posts yet.</p>
+        ) : (
+          <ul class='post-list'>
+            {page.data.map((post) => (
+              <EditorialPostItem {post} />
+            ))}
+          </ul>
+        )
+      }
+      {
+        (page.url.prev || page.url.next) && (
+          <nav class='pagination' aria-label='Blog pagination'>
+            {page.url.prev && (
+              <a href={page.url.prev} rel='prev'>
+                ← Previous posts
+              </a>
+            )}
+            {page.url.next && (
+              <a class='next-page' href={page.url.next} rel='next'>
+                Next posts →
+              </a>
+            )}
+          </nav>
+        )
+      }
+    </section>
+
+    {
+      uniqueTags.length > 0 && (
+        <section class='topics' aria-labelledby='topics-heading'>
+          <div class='topics-heading'>
+            <h2 id='topics-heading'>Explore by topic</h2>
+            <a href='/tags'>All topics →</a>
+          </div>
+          <ul>
+            {uniqueTags.slice(0, 50).map((tag) => (
+              <li>
+                <a href={`/tags/${encodeURIComponent(tag)}`}>{tag}</a>
+              </li>
+            ))}
+          </ul>
+        </section>
       )
     }
+
+    <footer class='blog-footer'>
+      <a href='/'>← Home</a>
+      <span>{config.title}</span>
+    </footer>
   </main>
 </PageLayout>
+
+<style>
+  .blog-index {
+    max-width: 1040px;
+    margin-inline: auto;
+    padding-bottom: 32px;
+  }
+  .blog-heading {
+    padding: 80px 0 64px;
+  }
+  .eyebrow {
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    color: hsl(var(--muted-foreground));
+  }
+  h1 {
+    margin-block: 18px 20px;
+    font-size: 48px;
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.04em;
+  }
+  .intro {
+    max-width: 560px;
+    color: hsl(var(--muted-foreground));
+    font-size: 17px;
+    line-height: 1.8;
+    text-wrap: pretty;
+  }
+  .blog-shortcuts {
+    display: flex;
+    gap: 26px;
+    margin-top: 28px;
+    font-size: 13px;
+  }
+  .blog-shortcuts a {
+    text-decoration: underline;
+    text-underline-offset: 5px;
+    text-decoration-color: hsl(var(--border));
+  }
+  .list-heading {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid hsl(var(--border));
+    font-size: 12px;
+    line-height: 1.6;
+    color: hsl(var(--muted-foreground));
+  }
+  .list-heading span {
+    margin-inline: 10px;
+    color: hsl(var(--border));
+  }
+  .post-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .empty-state {
+    padding-block: 40px;
+    color: hsl(var(--muted-foreground));
+  }
+  .pagination {
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
+    margin-top: 28px;
+    font-size: 13px;
+  }
+  .pagination a {
+    padding-block: 10px;
+  }
+  .next-page {
+    margin-left: auto;
+  }
+  .topics {
+    margin-top: 80px;
+  }
+  .topics-heading {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid hsl(var(--border) / 0.65);
+  }
+  .topics-heading h2 {
+    font-size: 16px;
+    font-weight: 500;
+  }
+  .topics-heading > a {
+    color: hsl(var(--muted-foreground));
+    font-size: 12px;
+  }
+  .topics ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px 26px;
+    margin-top: 24px;
+    padding: 0;
+    list-style: none;
+    font-size: 13px;
+    line-height: 1.8;
+    color: hsl(var(--muted-foreground));
+  }
+  .blog-footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
+    margin-top: 80px;
+    padding-top: 24px;
+    border-top: 1px solid hsl(var(--border) / 0.65);
+    color: hsl(var(--muted-foreground));
+    font-size: 12px;
+  }
+  @media (max-width: 640px) {
+    .blog-heading {
+      padding: 48px 0 44px;
+    }
+    h1 {
+      font-size: 38px;
+    }
+    .intro {
+      font-size: 15px;
+    }
+    .list-heading {
+      flex-wrap: wrap;
+      gap: 8px 20px;
+      font-size: 11px;
+    }
+    .topics,
+    .blog-footer {
+      margin-top: 56px;
+    }
+  }
+</style>

@@ -1,0 +1,68 @@
+---
+interface Props {
+  heading: string
+  subheading?: string
+  date?: string
+}
+
+const { heading, subheading, date } = Astro.props
+---
+
+<article class='project-entry'>
+  <header>
+    <div class='project-heading'>
+      <h3>{heading}</h3>
+      {date && <span class='project-date'>{date}</span>}
+    </div>
+    {subheading && <p class='project-subheading'>{subheading}</p>}
+  </header>
+  <div class='project-content'><slot /></div>
+</article>
+
+<style>
+  .project-entry + .project-entry {
+    margin-top: 12px;
+    padding-top: 32px;
+    border-top: 1px solid hsl(var(--border) / 0.6);
+  }
+  .project-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 12px 24px;
+  }
+  h3 {
+    font-size: 22px;
+    line-height: 1.5;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    overflow-wrap: anywhere;
+  }
+  .project-date {
+    color: hsl(var(--muted-foreground));
+    font-size: 12px;
+    white-space: nowrap;
+  }
+  .project-subheading {
+    margin-top: 10px;
+    color: hsl(var(--muted-foreground));
+    font-size: 14px;
+    line-height: 1.8;
+  }
+  .project-content {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    margin-top: 20px;
+  }
+  @media (max-width: 640px) {
+    h3 {
+      font-size: 20px;
+    }
+    .project-entry + .project-entry {
+      margin-top: 4px;
+      padding-top: 28px;
+    }
+  }
+</style>

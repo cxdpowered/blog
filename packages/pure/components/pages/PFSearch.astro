@@ -6,8 +6,8 @@ import '@pagefind/default-ui/css/ui.css'
   <aside class='form my-4'>
     {
       import.meta.env.DEV ? (
-        <div class='w-full rounded-xl border-2 bg-transparent px-4 py-2 pe-3 outline-none focus:border-foreground'>
-          You are in Dev mode, the search is disabled.
+        <div class='border px-5 py-5 text-sm text-muted-foreground'>
+          Search is available in the production preview.
         </div>
       ) : (
         <div id='site-search' />
@@ -26,7 +26,7 @@ import '@pagefind/default-ui/css/ui.css'
       const formatURL = (path: string) => path.replace(/(.)\/(#.*)?$/, '$1$2')
 
       window.addEventListener('DOMContentLoaded', () => {
-        // if (import.meta.env.DEV) return
+        if (import.meta.env.DEV) return
         const onIdle = window.requestIdleCallback || ((cb) => setTimeout(cb, 1))
         onIdle(async () => {
           // @ts-expect-error — Missing types for @pagefind/default-ui package.

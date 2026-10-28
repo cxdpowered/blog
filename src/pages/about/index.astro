@@ -1,6 +1,5 @@
 ---
-import { Button, Card, Timeline } from 'astro-pure/user'
-import PageLayout from '@/layouts/CommonPage.astro'
+import PageLayout from '@/layouts/EditorialPage.astro'
 
 const headings = [
   { depth: 2, slug: 'profile', text: 'Profile' },
@@ -11,128 +10,257 @@ const headings = [
   { depth: 2, slug: 'blog', text: 'Blog' },
   { depth: 2, slug: 'contact', text: 'Contact' }
 ]
+const milestones = [
+  {
+    date: '2026.05',
+    content:
+      '跑通 Dify 1.14.2 本地 Docker Compose、FastAPI Custom Tool 和 Personal Knowledge Publishing Agent 的 dry-run smoke test。'
+  },
+  {
+    date: '2026.03',
+    content: '参加 WPS 菁英工程师培养计划 C++ / Qt 方向，完成 8 周桌面应用工程化训练并结业。'
+  },
+  {
+    date: '2024.09',
+    content: '进入华中师范大学计算机学院，研究方向为视觉-文本跨模态检索。'
+  },
+  {
+    date: '2021',
+    content:
+      '本科毕业后在拼多多多多买菜湖北配送团队做区域配送业务执行，积累高节奏协作和问题闭环经验。'
+  }
+]
 ---
 
-<PageLayout title='About' {headings}>
-  <p>
-    这个博客不是为了把自己包装得很厉害。它更像一个持续更新的工作台：记录我怎么学习、怎么踩坑、怎么把一个想法慢慢做成东西。
-    如果这些记录顺便能让别人看出我会写代码、会思考、会把事情推进，那就算额外收益。
-  </p>
-
-  <div class='not-prose mb-8 flex flex-wrap gap-3'>
-    <Button title='GitHub' href='https://github.com/cxdpowered' target='_blank' variant='ahead' />
-    <Button title='Projects' href='/projects' variant='ahead' />
-    <Button title='Email' href='mailto:1293909048@qq.com' variant='ahead' />
-  </div>
-
-  <h2 id='profile'>Profile</h2>
-  <p>
-    我的背景不是单一路线：本科是物流工程，毕业后在拼多多多多买菜湖北配送团队做过一线业务执行；后来跨专业考研进入计算机方向，现在研究方向是弱监督文本驱动行人检索。
-  </p>
-
-  <h2 id='direction'>Direction</h2>
-  <div class='not-prose grid grid-cols-1 gap-3 sm:grid-cols-2'>
-    <Card
-      heading='AI 应用和个人工作流'
-      subheading='Agent Workflow、Tool Use、RAG、MCP、Dify 二次开发'
-    >
-      <p class='text-muted-foreground'>
-        我对“模型怎么变成日常可用的工具”比较感兴趣，尤其是从用户输入、结构化抽取、长期记忆、工具调用到发布部署的完整链路。
-      </p>
-    </Card>
-    <Card heading='多模态和工程化' subheading='PyTorch、多模态检索、分布式训练、模型服务化'>
-      <p class='text-muted-foreground'>
-        研究经历让我经常和
-        embedding、向量检索、模型训练、评估指标、部署环境打交道。很多文章会从这些具体问题展开。
-      </p>
-    </Card>
-  </div>
-
-  <h2 id='personal-knowledge-publishing-agent'>Personal Knowledge Publishing Agent</h2>
-  <p>
-    最近最想做成的东西是一个基于 Dify 二次开发的个人知识沉淀与技术内容发布
-    Agent。它不是普通聊天机器人，也不是简单套壳博客生成器，而是想把“随手记下来的碎片”慢慢变成能检索、能回看、能写成文章的长期材料。
-  </p>
-  <Card
-    heading='核心链路'
-    subheading='碎片输入结构化 -> 长期记忆 / RAG -> 博客草稿生成 -> MCP 发布工具链'
-  >
-    <ul class='ms-4 list-disc text-muted-foreground'>
-      <li>
-        用 FastAPI 封装结构化记录服务，定义 learning_note、project_update、interview_material
-        等记录类型。
-      </li>
-      <li>
-        通过 Dify Knowledge Base 做语义检索与 metadata filter，沉淀学习记录、项目决策和写作素材。
-      </li>
-      <li>
-        把草稿写入、frontmatter 校验、SEO 补全、死链检查、git push、Vercel 部署轮询封装为发布工具。
-      </li>
-      <li>
-        用 dry-run、人工确认和执行日志降低真实仓库误操作风险，并用分类准确率、RAG
-        召回命中率、草稿可用率做评估。
-      </li>
-    </ul>
-  </Card>
-
-  <h2 id='research'>Research</h2>
-  <Card
-    heading='弱监督文本-图像行人检索'
-    subheading='硕士研究课题，一作 IEEE TMM（CCF A）在审论文工作'
-  >
-    <ul class='ms-4 list-disc text-muted-foreground'>
-      <li>基于 ALBEF 视觉-语言预训练框架做跨模态检索研究。</li>
-      <li>引入伪标签可靠性建模与边界样本校准机制，缓解弱监督噪声标签带来的对齐问题。</li>
-      <li>
-        在 CUHK-PEDES、ICFG-PEDES、RSTPReid 等公开数据集完成实验，负责 PyTorch pipeline、DDP
-        训练、日志归档和结果分析。
-      </li>
-    </ul>
-  </Card>
-  <Card
-    heading='研究生数学建模大赛'
-    subheading='围岩裂隙精准识别与三维模型重构，队长，国家级二等奖'
-  >
-    <p class='text-muted-foreground'>
-      主导图像预处理、裂隙检测 /
-      分割、三维重建、参数量化、误差分析和论文撰写，训练了把开放问题拆成可验证工程步骤的能力。
+<PageLayout title='About' eyebrow='A work in progress' {headings}>
+  <Fragment slot='intro'>
+    <p>
+      这个博客不是为了把自己包装得很厉害。它更像一个持续更新的工作台：记录我怎么学习、怎么踩坑、怎么把一个想法慢慢做成东西。
+      如果这些记录顺便能让别人看出我会写代码、会思考、会把事情推进，那就算额外收益。
     </p>
-  </Card>
+  </Fragment>
 
-  <h2 id='experience'>Experience</h2>
-  <Timeline
-    events={[
-      {
-        date: '2026.05',
-        content:
-          '跑通 Dify 1.14.2 本地 Docker Compose、FastAPI Custom Tool 和 Personal Knowledge Publishing Agent 的 dry-run smoke test。'
-      },
-      {
-        date: '2026.03',
-        content: '参加 WPS 菁英工程师培养计划 C++ / Qt 方向，完成 8 周桌面应用工程化训练并结业。'
-      },
-      {
-        date: '2024.09',
-        content: '进入华中师范大学计算机学院，研究方向为视觉-文本跨模态检索。'
-      },
-      {
-        date: '2021',
-        content:
-          '本科毕业后在拼多多多多买菜湖北配送团队做区域配送业务执行，积累高节奏协作和问题闭环经验。'
-      }
-    ]}
-  />
+  <Fragment slot='actions'>
+    <a href='https://github.com/cxdpowered' target='_blank' rel='noopener noreferrer'>GitHub ↗</a>
+    <a href='/projects'>Projects →</a>
+    <a href='mailto:1293909048@qq.com'>Email ↗</a>
+  </Fragment>
 
-  <h2 id='blog'>Blog</h2>
-  <p>
-    博客会优先写我真正折腾过的内容：Dify / Agent Workflow、RAG 评估、MCP 工具链、FastAPI
-    服务封装、Astro 发布工作流、多模态检索实验复盘，以及 AI 编程工具在真实项目里的使用边界。
-  </p>
-  <p>我希望这里不是冷冰冰的作品列表，而是一个能持续留下思考、代码、失败和迭代痕迹的地方。</p>
+  <section class='detail-section' aria-labelledby='profile'>
+    <h2 id='profile'>Profile</h2>
+    <div class='section-body'>
+      <p>
+        我的背景不是单一路线：本科是物流工程，毕业后在拼多多多多买菜湖北配送团队做过一线业务执行；后来跨专业考研进入计算机方向，现在研究方向是弱监督文本驱动行人检索。
+      </p>
+    </div>
+  </section>
 
-  <h2 id='contact'>Contact</h2>
-  <p>
-    邮箱：<a href='mailto:1293909048@qq.com'>1293909048@qq.com</a><br />
-    GitHub：<a href='https://github.com/cxdpowered' target='_blank'>github.com/cxdpowered</a>
-  </p>
+  <section class='detail-section' aria-labelledby='direction'>
+    <h2 id='direction'>Direction</h2>
+    <div class='section-body'>
+      <div class='about-entries'>
+        <article class='about-entry'>
+          <header>
+            <h3>AI 应用和个人工作流</h3><p class='entry-subtitle'>
+              Agent Workflow、Tool Use、RAG、MCP、Dify 二次开发
+            </p>
+          </header>
+          <div class='entry-content'>
+            <p>
+              我对“模型怎么变成日常可用的工具”比较感兴趣，尤其是从用户输入、结构化抽取、长期记忆、工具调用到发布部署的完整链路。
+            </p>
+          </div>
+        </article>
+        <article class='about-entry'>
+          <header>
+            <h3>多模态和工程化</h3><p class='entry-subtitle'>
+              PyTorch、多模态检索、分布式训练、模型服务化
+            </p>
+          </header>
+          <div class='entry-content'>
+            <p>
+              研究经历让我经常和
+              embedding、向量检索、模型训练、评估指标、部署环境打交道。很多文章会从这些具体问题展开。
+            </p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class='detail-section' aria-labelledby='personal-knowledge-publishing-agent'>
+    <h2 id='personal-knowledge-publishing-agent'>Main Project</h2>
+    <div class='section-body'>
+      <h3 class='main-project-title'>Personal Knowledge Publishing Agent</h3>
+
+      <p>
+        最近最想做成的东西是一个基于 Dify 二次开发的个人知识沉淀与技术内容发布
+        Agent。它不是普通聊天机器人，也不是简单套壳博客生成器，而是想把“随手记下来的碎片”慢慢变成能检索、能回看、能写成文章的长期材料。
+      </p>
+      <article class='about-entry'>
+        <header>
+          <h3>核心链路</h3><p class='entry-subtitle'>
+            碎片输入结构化 -&gt; 长期记忆 / RAG -&gt; 博客草稿生成 -&gt; MCP 发布工具链
+          </p>
+        </header>
+        <div class='entry-content'>
+          <ul class='points'>
+            <li>
+              用 FastAPI 封装结构化记录服务，定义 learning_note、project_update、interview_material
+              等记录类型。
+            </li>
+            <li>
+              通过 Dify Knowledge Base 做语义检索与 metadata
+              filter，沉淀学习记录、项目决策和写作素材。
+            </li>
+            <li>
+              把草稿写入、frontmatter 校验、SEO 补全、死链检查、git push、Vercel
+              部署轮询封装为发布工具。
+            </li>
+            <li>
+              用 dry-run、人工确认和执行日志降低真实仓库误操作风险，并用分类准确率、RAG
+              召回命中率、草稿可用率做评估。
+            </li>
+          </ul>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class='detail-section' aria-labelledby='research'>
+    <h2 id='research'>Research</h2>
+    <div class='section-body'>
+      <article class='about-entry'>
+        <header>
+          <h3>弱监督文本-图像行人检索</h3><p class='entry-subtitle'>
+            硕士研究课题，一作 IEEE TMM（CCF A）在审论文工作
+          </p>
+        </header>
+        <div class='entry-content'>
+          <ul class='points'>
+            <li>基于 ALBEF 视觉-语言预训练框架做跨模态检索研究。</li>
+            <li>引入伪标签可靠性建模与边界样本校准机制，缓解弱监督噪声标签带来的对齐问题。</li>
+            <li>
+              在 CUHK-PEDES、ICFG-PEDES、RSTPReid 等公开数据集完成实验，负责 PyTorch pipeline、DDP
+              训练、日志归档和结果分析。
+            </li>
+          </ul>
+        </div>
+      </article>
+      <article class='about-entry'>
+        <header>
+          <h3>研究生数学建模大赛</h3><p class='entry-subtitle'>
+            围岩裂隙精准识别与三维模型重构，队长，国家级二等奖
+          </p>
+        </header>
+        <div class='entry-content'>
+          <p>
+            主导图像预处理、裂隙检测 /
+            分割、三维重建、参数量化、误差分析和论文撰写，训练了把开放问题拆成可验证工程步骤的能力。
+          </p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class='detail-section' aria-labelledby='experience'>
+    <h2 id='experience'>Experience</h2>
+    <div class='section-body'>
+      <ol class='about-timeline'>
+        {
+          milestones.map(({ date, content }) => (
+            <li>
+              <>
+                <span class='milestone-date'>{date}</span>
+                <p>{content}</p>
+              </>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <section class='detail-section' aria-labelledby='blog'>
+    <h2 id='blog'>Blog</h2>
+    <div class='section-body'>
+      <p>
+        博客会优先写我真正折腾过的内容：Dify / Agent Workflow、RAG 评估、MCP 工具链、FastAPI
+        服务封装、Astro 发布工作流、多模态检索实验复盘，以及 AI 编程工具在真实项目里的使用边界。
+      </p>
+      <p>我希望这里不是冷冰冰的作品列表，而是一个能持续留下思考、代码、失败和迭代痕迹的地方。</p>
+    </div>
+  </section>
+
+  <section class='detail-section' aria-labelledby='contact'>
+    <h2 id='contact'>Contact</h2>
+    <div class='section-body'>
+      <p>
+        邮箱：<a href='mailto:1293909048@qq.com'>1293909048@qq.com</a><br />
+        GitHub：<a href='https://github.com/cxdpowered' target='_blank'>github.com/cxdpowered</a>
+      </p>
+    </div>
+  </section>
 </PageLayout>
+
+<style>
+  .about-entries {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+  .about-entry + .about-entry {
+    padding-top: 32px;
+    border-top: 1px solid hsl(var(--border) / 0.6);
+  }
+  h3 {
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 1.5;
+    letter-spacing: -0.025em;
+  }
+  .entry-subtitle {
+    margin-top: 10px;
+    color: hsl(var(--muted-foreground));
+    font-size: 14px;
+    line-height: 1.8;
+  }
+  .entry-content {
+    margin-top: 20px;
+  }
+  .about-timeline {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .about-timeline li {
+    display: grid;
+    grid-template-columns: 80px minmax(0, 1fr);
+    gap: 24px;
+  }
+  .about-timeline li + li {
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid hsl(var(--border) / 0.6);
+  }
+  .milestone-date {
+    padding-top: 5px;
+    font-size: 12px;
+    color: hsl(var(--muted-foreground));
+    font-variant-numeric: tabular-nums;
+  }
+  .section-body a {
+    text-decoration: underline;
+    text-decoration-color: hsl(var(--border));
+    text-underline-offset: 5px;
+  }
+  @media (max-width: 640px) {
+    h3 {
+      font-size: 20px;
+    }
+    .about-timeline li {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 8px;
+    }
+  }
+</style>

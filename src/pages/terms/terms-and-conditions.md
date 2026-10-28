@@ -2,9 +2,31 @@
 layout: '@/layouts/IndividualPage.astro'
 
 title: 'Terms and Conditions'
-description: 'Last updated: 2024-11-26'
-language: 'En'
-back: '/terms/list'
+description: '最近修订：2026-10-28'
+language: '中文'
+back: '/terms'
 ---
 
-It may be recommended to generate policies from [PolicyMaker.io](https://policymaker.io).
+雪泥工坊由 cxd 维护，用来分享技术学习、项目实践和个人记录。欢迎阅读、提出不同意见和指出错误。
+
+## 阅读与交流
+
+文章反映作者在特定时间、版本和环境下的理解，可能更新或存在疏漏。使用其中的命令、代码和建议前，请结合自己的环境核实，具体说明见[免责声明](/terms/disclaimer)。本站不承诺每篇文章持续更新或每条评论都会得到回复。
+
+评论请围绕内容讨论。不要冒用他人身份、发布骚扰或垃圾广告、泄露私人信息，或提交你无权公开的材料。为维护讨论，作者可能移除这类评论或限制明显滥用的访问；如有误删，可通过下方邮箱说明情况。
+
+提交评论意味着你希望它在对应页面公开展示并供他人讨论，不意味着你把评论版权转让给本站。评论所涉及的信息处理、公开范围与更正删除方式见[隐私说明](/terms/privacy-policy)。
+
+## 使用本站内容
+
+转载、改编或引用本站内容时，请遵循[版权说明](/terms/copyright)及原文的单独标注。文章内容许可与代码仓库许可各有适用范围，不能相互替代。
+
+本站可能链接到第三方项目、文档和服务。它们的内容、可用性和规则由各自维护者决定；本站链接不构成对其全部内容的认可。
+
+## 联系与修订
+
+内容勘误、评论处理或授权问题，请联系 [1293909048@qq.com](mailto:1293909048@qq.com)。也可以在 [GitHub](https://github.com/cxdpowered) 查看相关项目。
+
+本页随站点功能变化修订，日期用于标明最近修改时间。这些说明不排除适用法律赋予你的权利。
+
+返回[站点说明](/terms)。

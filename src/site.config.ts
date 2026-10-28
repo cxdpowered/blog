@@ -28,7 +28,7 @@ export const theme: ThemeUserConfig = {
   },
   /** Set a logo image to show in the homepage. */
   logo: {
-    src: '/src/assets/logo.png',
+    src: '/images/brand-mark.svg',
     alt: '雪泥工坊 logo'
   },
 

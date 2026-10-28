@@ -1,33 +1,116 @@
 ---
 import { PFSearch } from 'astro-pure/components/pages'
-import { Button } from 'astro-pure/user'
-import PageLayout from '@/layouts/BaseLayout.astro'
+import PageLayout from '@/layouts/EditorialPage.astro'
 import { integ } from '@/site-config'
 
-const meta = {
-  description: 'Search relative posts of the whole blog',
-  title: 'Search'
-}
+export const prerender = true
+
+const description = 'Search posts, ideas, and notes from the blog.'
 ---
 
-<PageLayout {meta}>
-  <Button title='Back' href='/blog' variant='back' />
-  <main class='mt-6 lg:mt-10'>
-    <div id='content-header' class='animate'>
-      <h1 class='mb-6 text-3xl font-medium'>Search</h1>
-    </div>
+<PageLayout title='Search' eyebrow='Find something' {description}>
+  <Fragment slot='intro'>
+    <p>Search posts, ideas, and notes from the blog.</p>
+  </Fragment>
+  <Fragment slot='actions'>
+    <a href='/blog'>All posts →</a>
+    <a href='/tags'>Topics ↗</a>
+    <a href='/archives'>Archives ↗</a>
+  </Fragment>
 
-    <div id='content' class='animate'>
-      {
-        integ.pagefind ? (
-          <>
-            <p>Enter a search term or phrase to search the blog.</p>
-            <PFSearch />
-          </>
-        ) : (
-          <p>Pagefind is disabled.</p>
-        )
-      }
-    </div>
-  </main>
+  <section class='search-panel' aria-label='Search the blog'>
+    {integ.pagefind ? <PFSearch /> : <p>Search is currently unavailable.</p>}
+  </section>
 </PageLayout>
+
+<style>
+  .search-panel {
+    min-height: 220px;
+    padding-bottom: 24px;
+  }
+  .search-panel :global(site-search) {
+    display: block;
+  }
+  .search-panel :global(.form) {
+    margin: 0;
+  }
+  .search-panel :global(#site-search) {
+    --pagefind-ui-scale: 1;
+    --pagefind-ui-primary: hsl(var(--primary));
+    --pagefind-ui-text: hsl(var(--foreground));
+    --pagefind-ui-background: hsl(var(--background));
+    --pagefind-ui-border: hsl(var(--border));
+    --pagefind-ui-tag: hsl(var(--muted));
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 0;
+    --pagefind-ui-font: system-ui, 'PingFang SC', 'Microsoft YaHei', 'Noto Sans CJK SC', sans-serif;
+  }
+  .search-panel :global(#site-search .pagefind-ui__search-input) {
+    font-size: 17px;
+    font-weight: 400;
+  }
+  .search-panel :global(#site-search .pagefind-ui__search-input::placeholder) {
+    opacity: 0.65;
+  }
+  .search-panel :global(#site-search .pagefind-ui__search-input:focus-visible) {
+    outline: 2px solid hsl(var(--primary));
+    outline-offset: 3px;
+  }
+  .search-panel :global(#site-search .pagefind-ui__drawer) {
+    gap: 40px;
+  }
+  .search-panel :global(#site-search .pagefind-ui__result-inner) {
+    min-width: 0;
+  }
+  .search-panel :global(#site-search .pagefind-ui__result-title) {
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 1.55;
+    letter-spacing: -0.025em;
+    overflow-wrap: anywhere;
+  }
+  .search-panel :global(#site-search .pagefind-ui__result-excerpt) {
+    min-width: 0;
+    font-size: 15px;
+    line-height: 1.9;
+    color: hsl(var(--muted-foreground));
+    overflow-wrap: anywhere;
+  }
+  .search-panel :global(#site-search .pagefind-ui__result-nested) {
+    gap: 8px;
+  }
+  .search-panel :global(#site-search .pagefind-ui__message) {
+    height: auto;
+    font-size: 13px;
+    font-weight: 400;
+    color: hsl(var(--muted-foreground));
+  }
+  .search-panel :global(#site-search .pagefind-ui__filter-name) {
+    font-weight: 500;
+  }
+  .search-panel :global(#site-search .pagefind-ui__filter-label) {
+    font-size: 13px;
+  }
+  .search-panel :global(#site-search .pagefind-ui__button) {
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .search-panel :global(#site-search mark) {
+    color: hsl(var(--foreground));
+    background: hsl(var(--primary) / 0.12);
+  }
+  @media (max-width: 640px) {
+    .search-panel :global(#site-search .pagefind-ui__search-input) {
+      font-size: 16px;
+    }
+    .search-panel :global(#site-search .pagefind-ui__result-title) {
+      font-size: 20px;
+    }
+    .search-panel :global(#site-search .pagefind-ui__result-nested) {
+      padding-left: 16px;
+    }
+    .search-panel :global(#site-search .pagefind-ui__drawer) {
+      gap: 8px;
+    }
+  }
+</style>

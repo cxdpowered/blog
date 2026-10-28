@@ -1,14 +1,43 @@
 ---
-import { cn } from 'astro-pure/utils'
-
-const { class: className, title } = Astro.props
+interface Props {
+  title: string
+}
+const { title } = Astro.props
 ---
 
-<section class={cn('flex flex-col gap-y-5 md:flex-row md:gap-y-0', className)}>
-  <div class='text-xl font-medium md:min-w-36'>
-    <h2>{title}</h2>
-  </div>
-  <div class='flex flex-1 flex-col gap-y-3'>
-    <slot />
-  </div>
+<section class='home-section'>
+  <h2>{title}</h2>
+  <div class='home-section-content'><slot /></div>
 </section>
+
+<style>
+  .home-section {
+    display: grid;
+    grid-template-columns: 160px minmax(0, 1fr);
+    gap: 40px;
+    padding-block: 40px;
+    border-top: 1px solid hsl(var(--border));
+  }
+  h2 {
+    padding-top: 3px;
+    font-size: 13px;
+    font-weight: 500;
+    color: hsl(var(--muted-foreground));
+  }
+  .home-section-content {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    min-width: 0;
+  }
+  @media (max-width: 720px) {
+    .home-section {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 20px;
+      padding-block: 30px;
+    }
+    .home-section-content {
+      gap: 20px;
+    }
+  }
+</style>

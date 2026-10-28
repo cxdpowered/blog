@@ -1,0 +1,153 @@
+/* Shared reading palette and navigation for home, posts, and article pages. */
+body[data-editorial] {
+  --background: 45 25% 97%;
+  --foreground: 40 8% 15%;
+  --muted-foreground: 40 5% 43%;
+  --muted: 40 15% 93%;
+  --card: 40 15% 91%;
+  --border: 40 10% 83%;
+  --primary: 18 37% 38%;
+  --article-text: 40 6% 23%;
+  font-family: system-ui, 'PingFang SC', 'Microsoft YaHei', 'Noto Sans CJK SC', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+.dark body[data-editorial] {
+  --background: 40 7% 10%;
+  --foreground: 40 15% 91%;
+  --muted-foreground: 40 6% 62%;
+  --muted: 40 5% 14%;
+  --card: 40 5% 18%;
+  --border: 40 5% 26%;
+  --primary: 24 40% 70%;
+  --article-text: 40 10% 81%;
+}
+body[data-editorial] #main-container {
+  max-width: 1280px;
+}
+body[data-editorial] header-component {
+  margin-bottom: 0;
+  padding-block: 14px;
+  border-radius: 0;
+  border-width: 0 0 1px;
+  border-bottom-color: hsl(var(--border) / 0.55);
+  background: hsl(var(--background));
+  box-shadow: none;
+}
+.dark body[data-editorial] header-component.not-top,
+body[data-editorial] header-component.not-top {
+  margin-inline: 0;
+  box-shadow: none;
+}
+body[data-editorial] header-component > a {
+  margin-inline-start: 0;
+}
+body[data-editorial] :focus-visible {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 4px;
+}
+
+@media (max-width: 640px) {
+  body[data-editorial] #main-container {
+    padding-inline: 22px;
+  }
+}
+
+/* Keep navigation quiet, including its mobile disclosure. */
+.dark body[data-editorial] header-component.not-top,
+body[data-editorial] header-component.not-top {
+  padding-inline: 0;
+}
+body[data-editorial] header-component a[aria-current='page'] {
+  text-decoration: underline;
+  text-decoration-color: hsl(var(--border));
+  text-underline-offset: 6px;
+}
+body[data-editorial] #toggleDarkMode,
+body[data-editorial] #toggleMenu {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-color: transparent;
+  border-radius: 4px;
+}
+@media (max-width: 639px) {
+  body[data-editorial] #toggleMenu,
+  body[data-editorial] #toggleDarkMode {
+    width: 44px;
+    height: 44px;
+  }
+  body[data-editorial] header-component #headerExpandContent {
+    top: 100%;
+    padding: 8px 16px;
+    border: 1px solid hsl(var(--border) / 0.65);
+    border-top: 0;
+    border-radius: 0;
+    background: hsl(var(--background));
+    box-shadow: none;
+    visibility: hidden;
+    pointer-events: none;
+  }
+  body[data-editorial] header-component.expanded #headerExpandContent {
+    visibility: visible;
+    pointer-events: auto;
+  }
+  body[data-editorial] header-component #headerExpandContent::after {
+    display: none;
+  }
+  body[data-editorial] #headerExpandContent a {
+    min-height: 44px;
+    text-align: left;
+  }
+  body[data-editorial] #headerExpandContent a[title='Search'] {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding-inline: 0;
+  }
+}
+/* The desktop menu is always visible at the same breakpoint as its toggle. */
+@media (min-width: 640px) {
+  body[data-editorial] #toggleMenu {
+    display: none;
+  }
+  body[data-editorial] header-component #headerExpandContent {
+    grid-template-rows: 1fr;
+  }
+}
+
+body[data-editorial] #waline {
+  --waline-font-size: 15px;
+  --waline-light-grey: hsl(var(--muted-foreground));
+  --waline-dark-grey: hsl(var(--muted-foreground));
+  --waline-bg-color: hsl(var(--background));
+  --waline-bg-color-light: hsl(var(--muted));
+  --waline-bg-color-hover: hsl(var(--card));
+  --waline-disable-bg-color: hsl(var(--muted));
+  --waline-disable-color: hsl(var(--muted-foreground));
+  --waline-bq-color: hsl(var(--border));
+}
+
+.dark body[data-editorial] header-component.not-top {
+  background: hsl(var(--background));
+}
+
+body[data-editorial] #waline .wl-panel {
+  min-width: 0;
+  margin-inline: 0;
+  border-radius: 2px;
+}
+body[data-editorial] #waline .wl-header {
+  border-radius: 0;
+  border-bottom: 1px solid hsl(var(--border));
+}
+body[data-editorial] #waline .wl-btn {
+  border-radius: 2px;
+}
+@media (max-width: 580px) {
+  body[data-editorial] #waline .wl-header-item:not(:last-child) {
+    border-bottom: 1px solid hsl(var(--border));
+  }
+}

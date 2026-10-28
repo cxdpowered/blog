@@ -26,7 +26,11 @@ import { Icon } from '../user'
             <a
               href={item.link}
               class='w-full flex-none grow py-2 text-right font-medium transition-none hover:text-primary sm:w-fit sm:px-3'
-              aria-label='Nav menu item'
+              aria-current={
+                Astro.url.pathname === item.link || Astro.url.pathname.startsWith(item.link + '/')
+                  ? 'page'
+                  : undefined
+              }
             >
               {item.title}
             </a>
@@ -54,6 +58,8 @@ import { Icon } from '../user'
       </button>
       <button
         id='toggleMenu'
+        aria-controls='headerExpandContent'
+        aria-expanded='false'
         class='rounded-md border p-1.5 transition-colors hover:bg-border sm:hidden sm:group-[.not-top]:rounded-xl'
       >
         <span class='sr-only'>Menu</span>
@@ -98,8 +104,17 @@ import { Icon } from '../user'
       })
 
       // Menu
+      this.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && this.classList.contains('expanded')) {
+          this.classList.remove('expanded')
+          const menuButton = this.querySelector<HTMLButtonElement>('#toggleMenu')
+          menuButton?.setAttribute('aria-expanded', 'false')
+          menuButton?.focus()
+        }
+      })
       this.querySelector('#toggleMenu')?.addEventListener('click', () => {
-        this.classList.toggle('expanded')
+        const expanded = this.classList.toggle('expanded')
+        this.querySelector('#toggleMenu')?.setAttribute('aria-expanded', String(expanded))
       })
     }
   }
@@ -143,7 +158,7 @@ import { Icon } from '../user'
   }
 
   /* header menu */
-  @media (max-width: 640px) {
+  @media (max-width: 639px) {
     #headerExpandContent {
       grid-template-rows: 0fr;
       transition:

@@ -1,27 +1,113 @@
 ---
-import { Button, CardList } from 'astro-pure/user'
-import { cn } from 'astro-pure/utils'
-import PageLayout from '@/layouts/BaseLayout.astro'
-import { integ, terms } from '@/site-config'
+import PageLayout from '@/layouts/EditorialPage.astro'
+import { terms } from '@/site-config'
 
-const meta = {
-  title: 'Site policy',
-  description: 'Site policy documentation'
+const summaries: Record<string, string> = {
+  'Privacy Policy': '访问请求、评论与本地存储涉及哪些信息，以及如何请求更正或删除。',
+  'Terms and Conditions': '阅读、评论和使用本站内容时的基本约定。',
+  Copyright: '原创文章的 CC BY-NC-SA 4.0 许可，以及代码和外来材料的不同边界。',
+  Disclaimer: '技术版本、运行命令和第三方资料的使用边界。'
 }
 ---
 
-<PageLayout {meta}>
-  <Button title='Back' href='/' variant='back' />
-  <main class='mt-6 lg:mt-10'>
-    <div id='content-header' class='animate'>
-      <h1 class='mb-6 text-3xl font-medium'>Site Policy</h1>
-    </div>
+<PageLayout
+  title='Site Policy'
+  eyebrow='Site information'
+  description='雪泥工坊的隐私、内容使用与版权说明。'
+>
+  <Fragment slot='intro'>
+    <p>
+      这里说明雪泥工坊如何处理访问与评论信息、如何使用本站内容，以及阅读技术笔记时需要注意的边界。
+    </p>
+    <p class='policy-revision'>最近修订：2026-10-28</p>
+  </Fragment>
+  <Fragment slot='actions'>
+    <a href='/'>← Home</a>
+  </Fragment>
 
-    <div id='content' class={cn('animate mt-8 max-w-none md:min-w-[45ch]', integ.typography.class)}>
-      <h2 class='text-xl font-medium'>Site policy documentation</h2>
-      <CardList {...terms} />
-      <h2 class='text-xl font-medium'>Help Information</h2>
-      <p>You need to add md files in this directory.</p>
+  <section class='detail-section' aria-labelledby='terms-heading'>
+    <h2 id='terms-heading'>Policies</h2>
+    <div class='section-body'>
+      <ul class='policy-list'>
+        {
+          terms.list.map(({ title, link }) => (
+            <li>
+              <a href={link}>
+                <>
+                  <span>{title}</span>
+                  <span aria-hidden='true'>→</span>
+                </>
+              </a>
+              <p>{summaries[title]}</p>
+            </li>
+          ))
+        }
+      </ul>
     </div>
-  </main>
+  </section>
+
+  <section class='detail-section' aria-labelledby='contact-heading'>
+    <h2 id='contact-heading'>Contact</h2>
+    <div class='section-body'>
+      <p>
+        雪泥工坊由 cxd 维护。内容勘误、授权或评论记录处理问题，请提供相关页面和具体说明，联系 <a
+          href='mailto:1293909048@qq.com'>1293909048@qq.com</a
+        >。
+      </p>
+      <div class='detail-links'>
+        <a href='https://github.com/cxdpowered' target='_blank' rel='noopener noreferrer'
+          >GitHub ↗</a
+        ><a href='/about'>About →</a>
+      </div>
+    </div>
+  </section>
 </PageLayout>
+
+<style>
+  .policy-revision {
+    margin-top: 16px;
+    font-size: 12px;
+  }
+  .policy-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .policy-list li {
+    padding-block: 22px;
+  }
+  .policy-list li + li {
+    border-top: 1px solid hsl(var(--border) / 0.6);
+  }
+  .policy-list li:first-child {
+    padding-top: 0;
+  }
+  .policy-list a {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 24px;
+    font-size: 20px;
+    line-height: 1.5;
+  }
+  .policy-list a > :last-child {
+    color: hsl(var(--muted-foreground));
+    font-size: 14px;
+  }
+  .policy-list p {
+    margin-top: 10px;
+    color: hsl(var(--muted-foreground));
+    font-size: 14px;
+    line-height: 1.8;
+  }
+  .section-body > p a {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    text-decoration-color: hsl(var(--border));
+  }
+  @media (max-width: 640px) {
+    .policy-list a {
+      font-size: 18px;
+    }
+  }
+</style>

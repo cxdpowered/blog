@@ -1,6 +1,5 @@
 ---
 import type { CollectionKey, InferEntrySchema } from 'astro:content'
-
 import config from 'virtual:config'
 
 import { cn, getFormattedDate } from '../../utils'
@@ -17,17 +16,20 @@ const {
   class: className
 } = Astro.props
 
-const image = typeof heroImage?.src === 'string' ? heroImage?.src : (heroImage?.src?.src ?? '')
+const pageUrl = new URL(Astro.url.pathname, Astro.site).href
+const imagePath =
+  typeof heroImage?.src === 'string' ? heroImage.src : (heroImage?.src?.src ?? config.socialCard)
+const image = new URL(imagePath, Astro.site).href
 
 const shares = {
   weibo: {
-    link: `http://service.weibo.com/share/share.php?url=${Astro.url}&title=${title}&pic=${image}`
+    link: `https://service.weibo.com/share/share.php?${new URLSearchParams({ url: pageUrl, title, pic: image })}`
   },
   x: {
-    link: `https://x.com/intent/tweet?text='${title}'&url='${Astro.url}'&via='${config.author}'`
+    link: `https://x.com/intent/tweet?${new URLSearchParams({ text: title, url: pageUrl })}`
   },
   bluesky: {
-    link: `https://bsky.app/intent/compose?text=${title}%0A${Astro.url}`
+    link: `https://bsky.app/intent/compose?${new URLSearchParams({ text: `${title}\n${pageUrl}` })}`
   }
 } as const
 ---
@@ -43,7 +45,7 @@ const shares = {
   {/* title & link */}
   <div class='flex flex-col'>
     <div class='font-medium text-foreground'>{title}</div>
-    <div class='text-sm line-clamp-1'>{Astro.url}</div>
+    <div class='text-sm line-clamp-1'>{pageUrl}</div>
   </div>
 
   {/* common info */}
@@ -68,7 +70,7 @@ const shares = {
       <span>Copyright</span>
       <a
         class='text-sm text-foreground max-sm:place-self-center'
-        href='https://creativecommons.org/licenses/by/4.0/'
+        href='https://creativecommons.org/licenses/by-nc-sa/4.0/'
         target='_blank'
       >
         CC BY-NC-SA 4.0
@@ -81,6 +83,7 @@ const shares = {
     <div class='flex flex-row gap-3'>
       <button
         id='copy-link'
+        data-url={pageUrl}
         aria-label='Copy link'
         class='group rounded-full bg-muted p-1 text-muted-foreground transition-colors hover:text-primary sm:p-1.5'
       >
@@ -108,6 +111,7 @@ const shares = {
       }
     </div>
     <QRCode
+      content={pageUrl}
       class='absolute z-10 -mt-2 box-content max-h-0 max-w-44 overflow-hidden rounded-xl border bg-muted p-4 opacity-0 transition-all duration-300 ease-in-out'
     />
   </div>
@@ -126,10 +130,13 @@ const shares = {
 
   // Copy link
   const copyLink = document.getElementById('copy-link')
-  copyLink?.addEventListener('click', () => {
-    navigator.clipboard.writeText(window.location.href)
-    // Show toast
-    showToast({ message: 'Link copied!' })
+  copyLink?.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(copyLink.dataset.url!)
+      showToast({ message: 'Link copied!' })
+    } catch {
+      showToast({ message: 'Could not copy the link. Please copy the URL above.' })
+    }
   })
 
   // QRCode
