@@ -1,4 +1,4 @@
-import { type CollectionEntry, type CollectionKey, getCollection } from 'astro:content'
+import { getCollection, type CollectionEntry, type CollectionKey } from 'astro:content'
 
 type Collections = CollectionEntry<CollectionKey>[]
 
@@ -16,7 +16,7 @@ function getYearFromCollection<T extends CollectionKey>(
   collection: CollectionEntry<T>
 ): number | undefined {
   const dateStr = collection.data.updatedDate ?? collection.data.publishDate
-  return dateStr ? new Date(dateStr).getFullYear() : undefined
+  return dateStr ? new Date(dateStr).getUTCFullYear() : undefined
 }
 export function groupCollectionsByYear<T extends CollectionKey>(
   collections: Collections

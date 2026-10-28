@@ -10,6 +10,7 @@ const allPostsByYear = groupCollectionsByYear(allPostsByDate)
 const description = 'A list of all the years of creating my posts'
 const formatDate = (date: Date) =>
   new Intl.DateTimeFormat('en', {
+    timeZone: 'UTC',
     month: 'short',
     day: 'numeric'
   }).format(date)

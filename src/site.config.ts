@@ -21,6 +21,7 @@ export const theme: ThemeUserConfig = {
     // Date locale
     dateLocale: 'zh-CN',
     dateOptions: {
+      timeZone: 'UTC',
       day: 'numeric',
       month: 'short',
       year: 'numeric'

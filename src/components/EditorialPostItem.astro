@@ -11,6 +11,7 @@ const { post, compact = false } = Astro.props
 const { title, description, tags, heroImage, draft, publishDate, updatedDate } = post.data
 const postDate = updatedDate ?? publishDate
 const dateLabel = new Intl.DateTimeFormat('en', {
+  timeZone: 'UTC',
   month: 'short',
   day: 'numeric',
   year: 'numeric'
